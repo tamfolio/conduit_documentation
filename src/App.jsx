@@ -4,7 +4,7 @@ import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import MainContent from './components/MainContent';
 import CodePanel from './components/CodePanel';
-import { companyAccessTokensAPI } from './data/apiData.js';
+import {allAPIs, companyAccessTokensAPI } from './data/apiData';
 
 function App() {
   const [selectedEndpoint, setSelectedEndpoint] = useState(null);
