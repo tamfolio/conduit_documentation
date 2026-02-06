@@ -77,15 +77,7 @@ const Header = ({ selectedAPI, selectedEndpoint, onMobileMenuToggle }) => {
         </div>
       </div>
       
-      {/* Debug Info - Development only */}
-      {process.env.NODE_ENV === 'development' && (
-        <div className="bg-gray-800 text-white text-xs p-2 overflow-hidden">
-          <div className="truncate">
-            Selected API: {selectedAPI?.title || 'None'} | 
-            Selected Endpoint: {selectedEndpoint?.name || 'None'}
-          </div>
-        </div>
-      )}
+
     </header>
   );
 };

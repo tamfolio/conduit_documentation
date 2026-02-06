@@ -31,13 +31,6 @@ const MainContent = ({ selectedEndpoint, apiData }) => {
               All API endpoints require authentication. Check the Authentication section for details on how to get started.
             </p>
           </div>
-
-          {/* Debug info - Hidden on mobile */}
-          <div className="hidden md:block mt-8 p-4 bg-yellow-100 rounded text-sm">
-            <p><strong>Debug:</strong> No endpoint selected</p>
-            <p>Available API: {apiData?.title || 'None'}</p>
-            <p>Endpoints: {apiData?.endpoints?.length || 0}</p>
-          </div>
         </div>
       </div>
     );
@@ -55,16 +48,6 @@ const MainContent = ({ selectedEndpoint, apiData }) => {
 
   return (
     <div className="w-full p-4 md:p-8 bg-white">
-      {/* Debug Info - Compact on mobile */}
-      <div className="mb-4 p-2 md:p-3 bg-green-100 border border-green-300 rounded text-xs md:text-sm">
-        <p><strong>Debug:</strong> Endpoint selected!</p>
-        <div className="hidden md:block">
-          <p>API: {apiData?.title}</p>
-          <p>Endpoint: {selectedEndpoint?.name}</p>
-          <p>Method: {selectedEndpoint?.method}</p>
-        </div>
-      </div>
-
       {/* Endpoint Header */}
       <div className="mb-6 md:mb-8">
         <div className="flex flex-col sm:flex-row sm:items-center mb-4 gap-2">

@@ -108,12 +108,7 @@ const Sidebar = ({
             }
           }}
         >
-          {/* Debug Info */}
-          <div className="mb-4 p-2 bg-gray-100 text-xs rounded">
-            <div className="truncate">Selected API: {selectedAPI?.title}</div>
-            <div className="truncate">Selected Endpoint: {selectedEndpoint?.name || 'None'}</div>
-            <div>Total Categories: {Object.keys(apiCategories).length}</div>
-          </div>
+
 
           {/* API Categories */}
           <div>

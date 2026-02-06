@@ -57,14 +57,7 @@ const CodePanel = ({ selectedEndpoint }) => {
           <p className="text-sm md:text-base text-gray-500 px-4">
             Select an API endpoint to see code examples in multiple programming languages.
           </p>
-          
-          {/* Debug info - Hidden on mobile */}
-          <div className="hidden md:block mt-4 p-3 bg-gray-800 rounded text-xs text-left">
-            <p className="text-yellow-400">Debug Info:</p>
-            <p>Selected Endpoint: {selectedEndpoint?.name || 'None'}</p>
-            <p>Has Code Examples: {selectedEndpoint?.codeExamples ? 'Yes' : 'No'}</p>
-            <p>Available Examples: {selectedEndpoint?.codeExamples ? Object.keys(selectedEndpoint.codeExamples).join(', ') : 'None'}</p>
-          </div>
+        
         </div>
       </div>
     );
@@ -72,15 +65,7 @@ const CodePanel = ({ selectedEndpoint }) => {
 
   return (
     <div className="w-full bg-gray-900 text-gray-100 flex flex-col h-full">
-      {/* Debug Info - Compact on mobile */}
-      <div className="p-2 bg-green-800 text-xs border-b border-gray-700 flex-shrink-0">
-        <p><strong>Debug:</strong> Code panel active!</p>
-        <div className="hidden md:block">
-          <p>Endpoint: {selectedEndpoint.name}</p>
-          <p>Languages: {availableLanguages.join(', ')}</p>
-          <p>Selected: {selectedLanguage}</p>
-        </div>
-      </div>
+
 
       {/* Request Section */}
       <div className="flex-1 border-b border-gray-700 flex flex-col">
