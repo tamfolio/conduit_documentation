@@ -33,39 +33,39 @@ export const companyAccessTokensAPI = {
         
         codeExamples: {
           curl: `curl -X POST "$BASE_URL/api/company/access-tokens" \\
-    -H "Authorization: Bearer $TOKEN" \\
-    -H "Content-Type: application/json" \\
-    -d '{ "name": "Fintech Payouts", "expiresInDays": 90 }'`,
+  -H "Authorization: Bearer $TOKEN" \\
+  -H "Content-Type: application/json" \\
+  -d '{ "name": "Fintech Payouts", "expiresInDays": 90 }'`,
           javascript: `const payload = { name: "Fintech Payouts", expiresInDays: 90 };
-  const response = await fetch(\`\${BASE_URL}/api/company/access-tokens\`, {
-    method: "POST",
-    headers: {
-      Authorization: \`Bearer \${TOKEN}\`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(payload)
-  });
-  const data = await response.json();`
+const response = await fetch(\`\${BASE_URL}/api/company/access-tokens\`, {
+  method: "POST",
+  headers: {
+    Authorization: \`Bearer \${TOKEN}\`,
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify(payload)
+});
+const data = await response.json();`
         },
         
         responses: {
           "200": {
             description: "Success - Token created",
             example: `{
-    "success": true,
-    "message": "Access token created",
-    "data": {
-      "id": 12,
-      "name": "Fintech Payouts",
-      "isActive": true,
-      "expiresAt": "2026-05-06T12:00:00Z",
-      "lastUsedAt": null,
-      "createdAt": "2026-02-05T12:00:00Z",
-      "accessToken": "fp_live_..."
-    },
-    "errors": null,
-    "timestamp": "2026-02-05T12:00:00Z"
-  }`
+  "success": true,
+  "message": "Access token created",
+  "data": {
+    "id": 12,
+    "name": "Fintech Payouts",
+    "isActive": true,
+    "expiresAt": "2026-05-06T12:00:00Z",
+    "lastUsedAt": null,
+    "createdAt": "2026-02-05T12:00:00Z",
+    "accessToken": "fp_live_..."
+  },
+  "errors": null,
+  "timestamp": "2026-02-05T12:00:00Z"
+}`
           }
         },
         notes: ["accessToken is only returned at creation time. Store it securely."]
@@ -79,27 +79,27 @@ export const companyAccessTokensAPI = {
         
         codeExamples: {
           curl: `curl -X GET "$BASE_URL/api/company/access-tokens" \\
-    -H "Authorization: Bearer $TOKEN"`
+  -H "Authorization: Bearer $TOKEN"`
         },
         
         responses: {
           "200": {
             description: "Success - Tokens retrieved",
             example: `{
-    "success": true,
-    "message": "Access tokens retrieved",
-    "data": [
-      {
-        "id": 12,
-        "name": "Fintech Payouts",
-        "isActive": true,
-        "expiresAt": "2026-05-06T12:00:00Z",
-        "lastUsedAt": "2026-02-05T12:10:00Z",
-        "createdAt": "2026-02-05T12:00:00Z",
-        "accessToken": null
-      }
-    ]
-  }`
+  "success": true,
+  "message": "Access tokens retrieved",
+  "data": [
+    {
+      "id": 12,
+      "name": "Fintech Payouts",
+      "isActive": true,
+      "expiresAt": "2026-05-06T12:00:00Z",
+      "lastUsedAt": "2026-02-05T12:10:00Z",
+      "createdAt": "2026-02-05T12:00:00Z",
+      "accessToken": null
+    }
+  ]
+}`
           }
         }
       },
@@ -116,24 +116,577 @@ export const companyAccessTokensAPI = {
         
         codeExamples: {
           curl: `curl -X DELETE "$BASE_URL/api/company/access-tokens/12" \\
-    -H "Authorization: Bearer $TOKEN"`
+  -H "Authorization: Bearer $TOKEN"`
         },
         
         responses: {
           "200": {
             description: "Success - Token revoked",
             example: `{
-    "success": true,
-    "message": "Access token revoked",
-    "data": null
-  }`
+  "success": true,
+  "message": "Access token revoked",
+  "data": null
+}`
           }
         }
       }
     ]
   };
+
+export const fintechPayoutsAPI = {
+  title: "Fintech Payouts API",
+  description: "Complete fintech payouts integration for creating and managing payouts, wallets, and bank transfers",
+  category: "Fintech APIs",
   
-  export const outboundWebhooksAPI = {
+  authentication: {
+    type: "Fintech Access Token",
+    header: "Authorization: Bearer <fintech_access_token>",
+    apiKey: "X-API-Key: <api_key> (if enabled)",
+    contentType: "application/json"
+  },
+  
+  quickStartFlow: [
+    "Create or obtain a fintech access token",
+    "List supported banks",
+    "Resolve the beneficiary account",
+    "Create a payout",
+    "Query payout status or list payouts",
+    "Configure outbound webhooks (optional)"
+  ],
+  
+  endpoints: [
+    {
+      id: "list-banks-fintech",
+      name: "List Banks",
+      method: "GET",
+      path: "/api/fintech-payouts/banks",
+      description: "Retrieves all supported banks for payouts",
+      
+      codeExamples: {
+        curl: `curl -X GET "$BASE_URL/api/fintech-payouts/banks" \\
+-H "Authorization: Bearer $TOKEN"`,
+        javascript: `const response = await fetch(\`\${BASE_URL}/api/fintech-payouts/banks\`, {
+method: "GET",
+headers: { Authorization: \`Bearer \${TOKEN}\` }
+});
+const data = await response.json();`,
+        php: `$ch = curl_init("$BASE_URL/api/fintech-payouts/banks");
+curl_setopt_array($ch, [
+CURLOPT_RETURNTRANSFER => true,
+CURLOPT_HTTPHEADER => ["Authorization: Bearer $TOKEN"]
+]);
+$response = curl_exec($ch);`,
+        java: `HttpClient client = HttpClient.newHttpClient();
+HttpRequest request = HttpRequest.newBuilder()
+  .uri(URI.create(baseUrl + "/api/fintech-payouts/banks"))
+  .header("Authorization", "Bearer " + token)
+  .GET()
+  .build();
+HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());`,
+        go: `req, _ := http.NewRequest("GET", baseUrl+"/api/fintech-payouts/banks", nil)
+req.Header.Set("Authorization", "Bearer "+token)
+resp, _ := http.DefaultClient.Do(req)`
+      },
+      
+      responses: {
+        "200": {
+          description: "Success - Banks retrieved",
+          example: `{
+"success": true,
+"message": "Banks retrieved",
+"data": [
+  { "bankId": 12, "bankName": "Example Bank", "country": "NG" },
+  { "bankId": 27, "bankName": "Sandbox Bank", "country": "NG" }
+],
+"errors": null,
+"timestamp": "2026-02-05T12:00:00Z"
+}`
+        }
+      }
+    },
+    {
+      id: "resolve-account-fintech",
+      name: "Resolve Account",
+      method: "POST",
+      path: "/api/fintech-payouts/resolve-account",
+      description: "Validates and resolves a bank account number to verify the account name",
+      
+      requestBody: {
+        bankId: { type: "number", required: true, description: "Bank ID from banks list", example: 12 },
+        accountNumber: { type: "string", required: true, description: "Account number to resolve", example: "0123456789" }
+      },
+      
+      codeExamples: {
+        curl: `curl -X POST "$BASE_URL/api/fintech-payouts/resolve-account" \\
+-H "Authorization: Bearer $TOKEN" \\
+-H "Content-Type: application/json" \\
+-d '{ "bankId": 12, "accountNumber": "0123456789" }'`,
+        javascript: `const payload = { bankId: 12, accountNumber: "0123456789" };
+const response = await fetch(\`\${BASE_URL}/api/fintech-payouts/resolve-account\`, {
+method: "POST",
+headers: {
+  "Authorization": \`Bearer \${TOKEN}\`,
+  "Content-Type": "application/json"
+},
+body: JSON.stringify(payload)
+});
+const data = await response.json();`
+      },
+      
+      responses: {
+        "200": {
+          description: "Success - Account resolved",
+          example: `{
+"success": true,
+"message": "Account resolved",
+"data": {
+  "isSuccessful": true,
+  "accountNumber": "0123456789",
+  "bankCode": "999013",
+  "accountName": "Ada Lovelace",
+  "providerResponseCode": "00",
+  "message": "OK"
+},
+"errors": null,
+"timestamp": "2026-02-05T12:00:00Z"
+}`
+        }
+      }
+    },
+    {
+      id: "create-payout-fintech",
+      name: "Create Payout",
+      method: "POST",
+      path: "/api/fintech-payouts/payouts",
+      description: "Creates a new payout to transfer funds to a beneficiary account",
+      
+      requestBody: {
+        amount: { type: "number", required: true, description: "Amount in kobo/cents (e.g., 150000 = ₦1,500)", example: 150000 },
+        bankId: { type: "number", required: true, description: "Bank ID from banks list", example: 12 },
+        beneficiaryAccountNumber: { type: "string", required: true, description: "Recipient account number", example: "0123456789" },
+        beneficiaryAccountName: { type: "string", required: true, description: "Recipient account name", example: "Ada Lovelace" },
+        narration: { type: "string", required: false, description: "Transaction description", example: "Vendor settlement" },
+        currencyCode: { type: "string", required: false, description: "Currency code (defaults to NGN)", example: "NGN" },
+        clientReference: { type: "string", required: true, description: "Your unique reference (must be unique per company)", example: "PAYOUT-2026-0001" },
+        walletType: { type: "string", required: false, description: "Wallet type for the payout", example: "Disbursement" }
+      },
+      
+      codeExamples: {
+        curl: `curl -X POST "$BASE_URL/api/fintech-payouts/payouts" \\
+-H "Authorization: Bearer $TOKEN" \\
+-H "Content-Type: application/json" \\
+-d '{
+  "amount": 150000,
+  "bankId": 12,
+  "beneficiaryAccountNumber": "0123456789",
+  "beneficiaryAccountName": "Ada Lovelace",
+  "narration": "Vendor settlement",
+  "currencyCode": "NGN",
+  "clientReference": "PAYOUT-2026-0001",
+  "walletType": "Disbursement"
+}'`,
+        javascript: `const payload = {
+amount: 150000,
+bankId: 12,
+beneficiaryAccountNumber: "0123456789",
+beneficiaryAccountName: "Ada Lovelace",
+narration: "Vendor settlement",
+currencyCode: "NGN",
+clientReference: "PAYOUT-2026-0001",
+walletType: "Disbursement"
+};
+const response = await fetch(\`\${BASE_URL}/api/fintech-payouts/payouts\`, {
+method: "POST",
+headers: {
+  "Authorization": \`Bearer \${TOKEN}\`,
+  "Content-Type": "application/json"
+},
+body: JSON.stringify(payload)
+});
+const data = await response.json();`,
+        php: `$payload = json_encode([
+"amount" => 150000,
+"bankId" => 12,
+"beneficiaryAccountNumber" => "0123456789",
+"beneficiaryAccountName" => "Ada Lovelace",
+"narration" => "Vendor settlement",
+"currencyCode" => "NGN",
+"clientReference" => "PAYOUT-2026-0001",
+"walletType" => "Disbursement"
+]);
+$ch = curl_init("$BASE_URL/api/fintech-payouts/payouts");
+curl_setopt_array($ch, [
+CURLOPT_RETURNTRANSFER => true,
+CURLOPT_POST => true,
+CURLOPT_HTTPHEADER => [
+  "Authorization: Bearer $TOKEN",
+  "Content-Type: application/json"
+],
+CURLOPT_POSTFIELDS => $payload
+]);
+$response = curl_exec($ch);`
+      },
+      
+      responses: {
+        "200": {
+          description: "Success - Payout created",
+          example: `{
+"success": true,
+"message": "Payout created",
+"data": {
+  "id": 98765,
+  "companyId": 42,
+  "walletId": 101,
+  "amount": 150000,
+  "feeAmount": 75,
+  "currency": "NGN",
+  "bankId": 12,
+  "bankName": "Example Bank",
+  "beneficiaryAccountNumber": "0123456789",
+  "beneficiaryAccountName": "Ada Lovelace",
+  "status": "Processing",
+  "clientReference": "PAYOUT-2026-0001",
+  "transactionReference": "FPAY-ABC123",
+  "providerReference": "PRV-4477",
+  "createdAt": "2026-02-05T12:00:00Z",
+  "updatedAt": "2026-02-05T12:00:00Z"
+},
+"errors": null,
+"timestamp": "2026-02-05T12:00:00Z"
+}`
+        },
+        "409": {
+          description: "Conflict - Duplicate clientReference",
+          example: `{
+"success": false,
+"message": "Duplicate client reference",
+"errors": { "clientReference": ["A payout with this reference already exists"] }
+}`
+        }
+      },
+      notes: [
+        "clientReference must be unique per company. Duplicate values return 409 error.",
+        "Payouts are created in Processing state and transition to Completed or Failed.",
+        "Amount is in kobo/cents (e.g., 150000 = ₦1,500.00)"
+      ]
+    },
+    {
+      id: "get-payout-by-id",
+      name: "Get Payout by ID",
+      method: "GET",
+      path: "/api/fintech-payouts/payouts/{payoutId}",
+      description: "Retrieves a specific payout by its ID",
+      
+      parameters: {
+        payoutId: { type: "number", location: "path", required: true, description: "Payout ID", example: 98765 }
+      },
+      
+      codeExamples: {
+        curl: `curl -X GET "$BASE_URL/api/fintech-payouts/payouts/98765" \\
+-H "Authorization: Bearer $TOKEN"`,
+        javascript: `const response = await fetch(\`\${BASE_URL}/api/fintech-payouts/payouts/98765\`, {
+method: "GET",
+headers: { Authorization: \`Bearer \${TOKEN}\` }
+});
+const data = await response.json();`
+      },
+      
+      responses: {
+        "200": {
+          description: "Success - Payout retrieved",
+          example: `{
+"success": true,
+"message": "Payout retrieved",
+"data": {
+  "id": 98765,
+  "companyId": 42,
+  "amount": 150000,
+  "feeAmount": 75,
+  "currency": "NGN",
+  "status": "Completed",
+  "clientReference": "PAYOUT-2026-0001",
+  "transactionReference": "FPAY-ABC123",
+  "completedAt": "2026-02-05T12:01:10Z"
+}
+}`
+        }
+      }
+    },
+    {
+      id: "get-payout-by-reference",
+      name: "Get Payout by Client Reference",
+      method: "GET",
+      path: "/api/fintech-payouts/payouts/reference/{clientReference}",
+      description: "Retrieves a payout by your unique client reference",
+      
+      parameters: {
+        clientReference: { type: "string", location: "path", required: true, description: "Your unique payout reference", example: "PAYOUT-2026-0001" }
+      },
+      
+      codeExamples: {
+        curl: `curl -X GET "$BASE_URL/api/fintech-payouts/payouts/reference/PAYOUT-2026-0001" \\
+-H "Authorization: Bearer $TOKEN"`
+      }
+    },
+    {
+      id: "list-payouts-fintech",
+      name: "List Payouts",
+      method: "GET",
+      path: "/api/fintech-payouts/payouts",
+      description: "Retrieves a paginated list of payouts with optional filters",
+      
+      parameters: {
+        status: { type: "string", location: "query", required: false, description: "Filter by status (Processing, Completed, Failed, Cancelled)", example: "Completed" },
+        walletType: { type: "string", location: "query", required: false, description: "Filter by wallet type", example: "Disbursement" },
+        page: { type: "number", location: "query", required: false, description: "Page number", example: 1 },
+        pageSize: { type: "number", location: "query", required: false, description: "Items per page (max 100)", example: 20 }
+      },
+      
+      codeExamples: {
+        curl: `curl -X GET "$BASE_URL/api/fintech-payouts/payouts?status=Completed&walletType=Disbursement&page=1&pageSize=20" \\
+-H "Authorization: Bearer $TOKEN"`
+      },
+      
+      responses: {
+        "200": {
+          description: "Success - Payouts retrieved",
+          example: `{
+"success": true,
+"message": "Payouts retrieved",
+"data": {
+  "items": [
+    {
+      "id": 98765,
+      "amount": 150000,
+      "status": "Completed",
+      "clientReference": "PAYOUT-2026-0001",
+      "createdAt": "2026-02-05T12:00:00Z"
+    }
+  ],
+  "pageNumber": 1,
+  "pageSize": 20,
+  "totalCount": 1,
+  "totalPages": 1
+}
+}`
+        }
+      }
+    },
+    {
+      id: "list-wallets",
+      name: "List Wallets",
+      method: "GET",
+      path: "/api/fintech-payouts/wallets",
+      description: "Retrieves all wallets for the company",
+      
+      parameters: {
+        currencyCode: { type: "string", location: "query", required: false, description: "Filter by currency", example: "NGN" }
+      },
+      
+      codeExamples: {
+        curl: `curl -X GET "$BASE_URL/api/fintech-payouts/wallets?currencyCode=NGN" \\
+-H "Authorization: Bearer $TOKEN"`
+      },
+      
+      responses: {
+        "200": {
+          description: "Success - Wallets retrieved",
+          example: `{
+"success": true,
+"message": "Wallets retrieved",
+"data": [
+  {
+    "walletId": 101,
+    "walletType": "Disbursement",
+    "currencyCode": "NGN",
+    "currentBalance": 1250000,
+    "ledgerBalance": 1250000,
+    "status": "Active",
+    "accounts": []
+  }
+]
+}`
+        }
+      }
+    },
+    {
+      id: "create-or-get-wallet",
+      name: "Create or Get Wallet",
+      method: "POST",
+      path: "/api/fintech-payouts/wallets",
+      description: "Creates a new wallet or returns existing wallet",
+      
+      requestBody: {
+        walletType: { type: "string", required: false, description: "Wallet type (defaults to Collection)", example: "Collection" },
+        currencyCode: { type: "string", required: false, description: "Currency code (defaults to NGN)", example: "NGN" }
+      },
+      
+      codeExamples: {
+        curl: `curl -X POST "$BASE_URL/api/fintech-payouts/wallets" \\
+-H "Authorization: Bearer $TOKEN" \\
+-H "Content-Type: application/json" \\
+-d '{ "walletType": "Collection", "currencyCode": "NGN" }'`
+      }
+    },
+    {
+      id: "provision-wallet-account",
+      name: "Provision Wallet Account",
+      method: "POST",
+      path: "/api/fintech-payouts/wallets/accounts",
+      description: "Provisions a virtual account for a wallet (provider support required)",
+      
+      requestBody: {
+        walletType: { type: "string", required: true, description: "Wallet type", example: "Collection" },
+        currencyCode: { type: "string", required: true, description: "Currency code", example: "NGN" },
+        firstName: { type: "string", required: true, description: "Account holder first name", example: "Ada" },
+        lastName: { type: "string", required: true, description: "Account holder last name", example: "Lovelace" },
+        email: { type: "string", required: true, description: "Account holder email", example: "ada@example.com" },
+        phoneNumber: { type: "string", required: true, description: "Account holder phone", example: "+2348012345678" }
+      },
+      
+      codeExamples: {
+        curl: `curl -X POST "$BASE_URL/api/fintech-payouts/wallets/accounts" \\
+-H "Authorization: Bearer $TOKEN" \\
+-H "Content-Type: application/json" \\
+-d '{
+  "walletType": "Collection",
+  "currencyCode": "NGN",
+  "firstName": "Ada",
+  "lastName": "Lovelace",
+  "email": "ada@example.com",
+  "phoneNumber": "+2348012345678"
+}'`
+      },
+      
+      responses: {
+        "200": {
+          description: "Success - Wallet account provisioned",
+          example: `{
+"success": true,
+"message": "Wallet account provisioned",
+"data": {
+  "id": 3001,
+  "walletId": 201,
+  "accountNumber": "1020304050",
+  "accountName": "Ada Lovelace",
+  "bankCode": "999013",
+  "provider": "Polaris",
+  "currencyCode": "NGN",
+  "status": "Active"
+}
+}`
+        }
+      },
+      notes: ["Only supported when the active provider supports account provisioning (e.g., Polaris)"]
+    },
+    {
+      id: "list-webhook-deliveries-fintech",
+      name: "List Webhook Deliveries",
+      method: "GET",
+      path: "/api/fintech-payouts/webhooks/deliveries",
+      description: "Retrieves webhook delivery history with filters",
+      
+      parameters: {
+        status: { type: "string", location: "query", required: false, description: "Filter by delivery status (PENDING, SUCCESS, FAILED)", example: "FAILED" },
+        eventType: { type: "string", location: "query", required: false, description: "Filter by event type", example: "payout.failed" },
+        pageNumber: { type: "number", location: "query", required: false, description: "Page number", example: 1 },
+        pageSize: { type: "number", location: "query", required: false, description: "Items per page", example: 50 }
+      },
+      
+      codeExamples: {
+        curl: `curl -X GET "$BASE_URL/api/fintech-payouts/webhooks/deliveries?status=FAILED&eventType=payout.failed&pageNumber=1&pageSize=50" \\
+-H "Authorization: Bearer $TOKEN"`
+      }
+    },
+    {
+      id: "resend-webhook-delivery-fintech",
+      name: "Resend Webhook Delivery",
+      method: "POST",
+      path: "/api/fintech-payouts/webhooks/deliveries/{id}/resend",
+      description: "Retriggers a failed or pending webhook delivery",
+      
+      parameters: {
+        id: { type: "number", location: "path", required: true, description: "Delivery ID", example: 9001 }
+      },
+      
+      codeExamples: {
+        curl: `curl -X POST "$BASE_URL/api/fintech-payouts/webhooks/deliveries/9001/resend" \\
+-H "Authorization: Bearer $TOKEN"`
+      },
+      
+      responses: {
+        "200": {
+          description: "Success - Webhook delivery re-triggered",
+          example: `{
+"success": true,
+"message": "Webhook delivery re-triggered",
+"data": {
+  "id": 9001,
+  "status": "PENDING",
+  "attemptCount": 2,
+  "maxRetries": 5,
+  "nextRetryAt": "2026-02-05T12:16:00Z"
+}
+}`
+        }
+      }
+    }
+  ],
+  
+  webhookEvents: [
+    {
+      eventType: "payout.created",
+      description: "Fired when a payout is initially created",
+      examplePayload: `{
+"eventType": "payout.created",
+"eventId": "98765",
+"timestamp": "2026-02-05T12:00:00Z",
+"data": {
+  "payout_id": 98765,
+  "client_reference": "PAYOUT-2026-0001",
+  "status": "Processing",
+  "amount": 150000,
+  "currency": "NGN"
+}
+}`
+    },
+    {
+      eventType: "payout.completed",
+      description: "Fired when a payout successfully completes",
+      examplePayload: `{
+"eventType": "payout.completed",
+"eventId": "98765",
+"timestamp": "2026-02-05T12:01:10Z",
+"data": {
+  "payout_id": 98765,
+  "client_reference": "PAYOUT-2026-0001",
+  "transaction_reference": "FPAY-ABC123",
+  "status": "Completed",
+  "amount": 150000,
+  "completed_at": "2026-02-05T12:01:10Z"
+}
+}`
+    },
+    {
+      eventType: "payout.failed",
+      description: "Fired when a payout fails",
+      examplePayload: `{
+"eventType": "payout.failed",
+"eventId": "98766",
+"timestamp": "2026-02-05T12:05:00Z",
+"data": {
+  "payout_id": 98766,
+  "client_reference": "PAYOUT-2026-0002",
+  "status": "Failed",
+  "failure_reason": "Insufficient funds",
+  "amount": 250000
+}
+}`
+    }
+  ]
+};
+  
+export const outboundWebhooksAPI = {
     title: "Outbound Webhooks API",
     description: "Configure and manage outbound webhook deliveries for event notifications",
     category: "Integration APIs",
@@ -172,52 +725,52 @@ export const companyAccessTokensAPI = {
         
         codeExamples: {
           curl: `curl -X POST "$BASE_URL/api/outboundwebhook" \\
-    -H "Authorization: Bearer $TOKEN" \\
-    -H "X-API-Key: $API_KEY" \\
-    -H "Content-Type: application/json" \\
-    -d '{
-      "name": "Fintech Payouts",
-      "endpointUrl": "https://client.example.com/webhooks/payouts",
-      "httpMethod": "POST",
-      "authType": "hmac-sha256",
-      "authValue": "your-signing-secret",
-      "isActive": true,
-      "eventType": "payout.completed"
-    }'`,
+  -H "Authorization: Bearer $TOKEN" \\
+  -H "X-API-Key: $API_KEY" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "name": "Fintech Payouts",
+    "endpointUrl": "https://client.example.com/webhooks/payouts",
+    "httpMethod": "POST",
+    "authType": "hmac-sha256",
+    "authValue": "your-signing-secret",
+    "isActive": true,
+    "eventType": "payout.completed"
+  }'`,
           javascript: `const payload = {
-    name: "Fintech Payouts",
-    endpointUrl: "https://client.example.com/webhooks/payouts",
-    httpMethod: "POST",
-    authType: "hmac-sha256",
-    authValue: "your-signing-secret",
-    isActive: true,
-    eventType: "payout.completed"
-  };
-  const response = await fetch(\`\${BASE_URL}/api/outboundwebhook\`, {
-    method: "POST",
-    headers: {
-      Authorization: \`Bearer \${TOKEN}\`,
-      "X-API-Key": API_KEY,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(payload)
-  });`
+  name: "Fintech Payouts",
+  endpointUrl: "https://client.example.com/webhooks/payouts",
+  httpMethod: "POST",
+  authType: "hmac-sha256",
+  authValue: "your-signing-secret",
+  isActive: true,
+  eventType: "payout.completed"
+};
+const response = await fetch(\`\${BASE_URL}/api/outboundwebhook\`, {
+  method: "POST",
+  headers: {
+    Authorization: \`Bearer \${TOKEN}\`,
+    "X-API-Key": API_KEY,
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify(payload)
+});`
         },
         
         responses: {
           "200": {
             description: "Success - Webhook created",
             example: `{
-    "success": true,
-    "message": "Webhook configuration created successfully",
-    "data": {
-      "id": 77,
-      "name": "Fintech Payouts",
-      "endpointUrl": "https://client.example.com/webhooks/payouts",
-      "isActive": true,
-      "eventType": "payout.completed"
-    }
-  }`
+  "success": true,
+  "message": "Webhook configuration created successfully",
+  "data": {
+    "id": 77,
+    "name": "Fintech Payouts",
+    "endpointUrl": "https://client.example.com/webhooks/payouts",
+    "isActive": true,
+    "eventType": "payout.completed"
+  }
+}`
           }
         }
       },
@@ -230,8 +783,49 @@ export const companyAccessTokensAPI = {
         
         codeExamples: {
           curl: `curl -X GET "$BASE_URL/api/outboundwebhook" \\
-    -H "Authorization: Bearer $TOKEN" \\
-    -H "X-API-Key: $API_KEY"`
+  -H "Authorization: Bearer $TOKEN" \\
+  -H "X-API-Key: $API_KEY"`
+        }
+      },
+      {
+        id: "update-webhook",
+        name: "Update Webhook Configuration",
+        method: "PUT",
+        path: "/api/outboundwebhook/{id}",
+        description: "Updates an existing webhook configuration",
+        
+        parameters: {
+          id: { type: "number", location: "path", required: true, description: "Webhook configuration ID", example: 77 }
+        },
+        
+        requestBody: {
+          isActive: { type: "boolean", required: false, description: "Enable/disable webhook", example: false },
+          timeoutSeconds: { type: "number", required: false, description: "Request timeout", example: 60 }
+        },
+        
+        codeExamples: {
+          curl: `curl -X PUT "$BASE_URL/api/outboundwebhook/77" \\
+  -H "Authorization: Bearer $TOKEN" \\
+  -H "X-API-Key: $API_KEY" \\
+  -H "Content-Type: application/json" \\
+  -d '{ "isActive": false, "timeoutSeconds": 60 }'`
+        }
+      },
+      {
+        id: "delete-webhook",
+        name: "Delete Webhook Configuration",
+        method: "DELETE",
+        path: "/api/outboundwebhook/{id}",
+        description: "Deletes a webhook configuration",
+        
+        parameters: {
+          id: { type: "number", location: "path", required: true, description: "Webhook configuration ID", example: 77 }
+        },
+        
+        codeExamples: {
+          curl: `curl -X DELETE "$BASE_URL/api/outboundwebhook/77" \\
+  -H "Authorization: Bearer $TOKEN" \\
+  -H "X-API-Key: $API_KEY"`
         }
       },
       {
@@ -247,29 +841,66 @@ export const companyAccessTokensAPI = {
         
         codeExamples: {
           curl: `curl -X GET "$BASE_URL/api/outboundwebhook/stats?eventType=payout.completed" \\
-    -H "Authorization: Bearer $TOKEN" \\
-    -H "X-API-Key: $API_KEY"`
+  -H "Authorization: Bearer $TOKEN" \\
+  -H "X-API-Key: $API_KEY"`
         },
         
         responses: {
           "200": {
             description: "Success - Stats retrieved",
             example: `{
-    "success": true,
-    "data": {
-      "totalDeliveries": 12,
-      "successfulDeliveries": 10,
-      "failedDeliveries": 2,
-      "pendingDeliveries": 0
-    }
-  }`
+  "success": true,
+  "data": {
+    "totalDeliveries": 12,
+    "successfulDeliveries": 10,
+    "failedDeliveries": 2,
+    "pendingDeliveries": 0
+  }
+}`
           }
+        }
+      },
+      {
+        id: "list-webhook-deliveries",
+        name: "List Webhook Deliveries",
+        method: "GET",
+        path: "/api/outboundwebhook/deliveries",
+        description: "Retrieves webhook delivery history",
+        
+        parameters: {
+          status: { type: "string", location: "query", required: false, description: "Filter by status", example: "FAILED" },
+          configurationId: { type: "number", location: "query", required: false, description: "Filter by webhook config", example: 77 },
+          pageNumber: { type: "number", location: "query", required: false, description: "Page number", example: 1 },
+          pageSize: { type: "number", location: "query", required: false, description: "Items per page", example: 50 }
+        },
+        
+        codeExamples: {
+          curl: `curl -X GET "$BASE_URL/api/outboundwebhook/deliveries?status=FAILED&configurationId=77&pageNumber=1&pageSize=50" \\
+  -H "Authorization: Bearer $TOKEN" \\
+  -H "X-API-Key: $API_KEY"`
+        }
+      },
+      {
+        id: "retry-webhook-delivery",
+        name: "Retry Webhook Delivery",
+        method: "POST",
+        path: "/api/outboundwebhook/deliveries/{id}/retry",
+        description: "Retries a failed webhook delivery",
+        
+        parameters: {
+          id: { type: "number", location: "path", required: true, description: "Delivery ID", example: 9001 }
+        },
+        
+        codeExamples: {
+          curl: `curl -X POST "$BASE_URL/api/outboundwebhook/deliveries/9001/retry" \\
+  -H "Authorization: Bearer $TOKEN" \\
+  -H "X-API-Key: $API_KEY"`
         }
       }
     ]
   };
   
-  export const fintechAccountsAPI = {
+export const fintechAccountsAPI = {
     title: "Fintech Accounts API",
     description: "Create and retrieve virtual accounts using fintech access tokens",
     category: "Fintech APIs",
@@ -297,46 +928,46 @@ export const companyAccessTokensAPI = {
         
         codeExamples: {
           curl: `curl -X POST "$BASE_URL/api/fintech-accounts" \\
-    -H "Authorization: Bearer $TOKEN" \\
-    -H "Content-Type: application/json" \\
-    -d '{
-      "firstName": "Ada",
-      "lastName": "Lovelace",
-      "email": "ada@example.com",
-      "phoneNumber": "+2348012345678"
-    }'`,
+  -H "Authorization: Bearer $TOKEN" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "firstName": "Ada",
+    "lastName": "Lovelace",
+    "email": "ada@example.com",
+    "phoneNumber": "+2348012345678"
+  }'`,
           javascript: `const payload = {
-    firstName: "Ada",
-    lastName: "Lovelace",
-    email: "ada@example.com",
-    phoneNumber: "+2348012345678"
-  };
-  const response = await fetch(\`\${BASE_URL}/api/fintech-accounts\`, {
-    method: "POST",
-    headers: {
-      Authorization: \`Bearer \${TOKEN}\`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(payload)
-  });`
+  firstName: "Ada",
+  lastName: "Lovelace",
+  email: "ada@example.com",
+  phoneNumber: "+2348012345678"
+};
+const response = await fetch(\`\${BASE_URL}/api/fintech-accounts\`, {
+  method: "POST",
+  headers: {
+    Authorization: \`Bearer \${TOKEN}\`,
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify(payload)
+});`
         },
         
         responses: {
           "200": {
             description: "Success - Account created",
             example: `{
-    "success": true,
-    "message": "Account created",
-    "data": {
-      "accountId": 123,
-      "accountNumber": "1020304050",
-      "accountName": "Ada Lovelace",
-      "customerCode": "CUST-8899",
-      "currentBalance": 0,
-      "currencyCode": "NGN",
-      "status": "Active"
-    }
-  }`
+  "success": true,
+  "message": "Account created",
+  "data": {
+    "accountId": 123,
+    "accountNumber": "1020304050",
+    "accountName": "Ada Lovelace",
+    "customerCode": "CUST-8899",
+    "currentBalance": 0,
+    "currencyCode": "NGN",
+    "status": "Active"
+  }
+}`
           }
         }
       },
@@ -354,28 +985,28 @@ export const companyAccessTokensAPI = {
         
         codeExamples: {
           curl: `curl -X GET "$BASE_URL/api/fintech-accounts?page=1&pageSize=20" \\
-    -H "Authorization: Bearer $TOKEN"`
+  -H "Authorization: Bearer $TOKEN"`
         },
         
         responses: {
           "200": {
             description: "Success - Accounts retrieved",
             example: `{
-    "success": true,
-    "data": {
-      "items": [
-        {
-          "accountId": 123,
-          "accountNumber": "1020304050",
-          "accountName": "Ada Lovelace",
-          "currentBalance": 0,
-          "status": "Active"
-        }
-      ],
-      "totalCount": 1,
-      "pageNumber": 1
-    }
-  }`
+  "success": true,
+  "data": {
+    "items": [
+      {
+        "accountId": 123,
+        "accountNumber": "1020304050",
+        "accountName": "Ada Lovelace",
+        "currentBalance": 0,
+        "status": "Active"
+      }
+    ],
+    "totalCount": 1,
+    "pageNumber": 1
+  }
+}`
           }
         }
       },
@@ -392,13 +1023,29 @@ export const companyAccessTokensAPI = {
         
         codeExamples: {
           curl: `curl -X GET "$BASE_URL/api/fintech-accounts/123" \\
-    -H "Authorization: Bearer $TOKEN"`
+  -H "Authorization: Bearer $TOKEN"`
+        }
+      },
+      {
+        id: "get-fintech-account-by-number",
+        name: "Get Account by Number",
+        method: "GET",
+        path: "/api/fintech-accounts/number/{accountNumber}",
+        description: "Retrieves a specific account by account number",
+        
+        parameters: {
+          accountNumber: { type: "string", location: "path", required: true, description: "Account number", example: "1020304050" }
+        },
+        
+        codeExamples: {
+          curl: `curl -X GET "$BASE_URL/api/fintech-accounts/number/1020304050" \\
+  -H "Authorization: Bearer $TOKEN"`
         }
       }
     ]
   };
   
-  export const companyBusinessPayoutsAPI = {
+export const companyBusinessPayoutsAPI = {
     title: "Company Business Payouts API",
     description: "Create and manage business payouts using company accounts",
     category: "Company APIs",
@@ -411,7 +1058,7 @@ export const companyAccessTokensAPI = {
     
     endpoints: [
       {
-        id: "list-banks",
+        id: "list-banks-company",
         name: "List Banks",
         method: "GET",
         path: "/api/company/business-payouts/banks",
@@ -419,24 +1066,24 @@ export const companyAccessTokensAPI = {
         
         codeExamples: {
           curl: `curl -X GET "$BASE_URL/api/company/business-payouts/banks" \\
-    -H "Authorization: Bearer $TOKEN"`
+  -H "Authorization: Bearer $TOKEN"`
         },
         
         responses: {
           "200": {
             description: "Success - Banks retrieved",
             example: `{
-    "success": true,
-    "data": [
-      { "bankId": 12, "bankName": "Example Bank", "country": "NG" },
-      { "bankId": 27, "bankName": "Sandbox Bank", "country": "NG" }
-    ]
-  }`
+  "success": true,
+  "data": [
+    { "bankId": 12, "bankName": "Example Bank", "country": "NG" },
+    { "bankId": 27, "bankName": "Sandbox Bank", "country": "NG" }
+  ]
+}`
           }
         }
       },
       {
-        id: "resolve-account",
+        id: "resolve-account-company",
         name: "Resolve Account",
         method: "POST",
         path: "/api/company/business-payouts/resolve-account",
@@ -449,36 +1096,36 @@ export const companyAccessTokensAPI = {
         
         codeExamples: {
           curl: `curl -X POST "$BASE_URL/api/company/business-payouts/resolve-account" \\
-    -H "Authorization: Bearer $TOKEN" \\
-    -H "Content-Type: application/json" \\
-    -d '{ "bankId": 12, "accountNumber": "0123456789" }'`,
+  -H "Authorization: Bearer $TOKEN" \\
+  -H "Content-Type: application/json" \\
+  -d '{ "bankId": 12, "accountNumber": "0123456789" }'`,
           javascript: `const payload = { bankId: 12, accountNumber: "0123456789" };
-  const response = await fetch(\`\${BASE_URL}/api/company/business-payouts/resolve-account\`, {
-    method: "POST",
-    headers: {
-      Authorization: \`Bearer \${TOKEN}\`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(payload)
-  });`
+const response = await fetch(\`\${BASE_URL}/api/company/business-payouts/resolve-account\`, {
+  method: "POST",
+  headers: {
+    Authorization: \`Bearer \${TOKEN}\`,
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify(payload)
+});`
         },
         
         responses: {
           "200": {
             description: "Success - Account resolved",
             example: `{
-    "success": true,
-    "data": {
-      "accountNumber": "0123456789",
-      "accountName": "Ada Lovelace",
-      "isSuccessful": true
-    }
-  }`
+  "success": true,
+  "data": {
+    "accountNumber": "0123456789",
+    "accountName": "Ada Lovelace",
+    "isSuccessful": true
+  }
+}`
           }
         }
       },
       {
-        id: "create-payout",
+        id: "create-business-payout",
         name: "Create Payout",
         method: "POST",
         path: "/api/company/business-payouts",
@@ -495,50 +1142,100 @@ export const companyAccessTokensAPI = {
         
         codeExamples: {
           curl: `curl -X POST "$BASE_URL/api/company/business-payouts" \\
-    -H "Authorization: Bearer $TOKEN" \\
-    -H "Content-Type: application/json" \\
-    -d '{
-      "amount": 150000,
-      "bankId": 12,
-      "beneficiaryAccountNumber": "0123456789",
-      "beneficiaryAccountName": "Ada Lovelace",
-      "clientReference": "PAYOUT-2026-0001",
-      "narration": "Vendor settlement"
-    }'`,
+  -H "Authorization: Bearer $TOKEN" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "amount": 150000,
+    "bankId": 12,
+    "beneficiaryAccountNumber": "0123456789",
+    "beneficiaryAccountName": "Ada Lovelace",
+    "clientReference": "PAYOUT-2026-0001",
+    "narration": "Vendor settlement"
+  }'`,
           javascript: `const payload = {
-    amount: 150000,
-    bankId: 12,
-    beneficiaryAccountNumber: "0123456789",
-    beneficiaryAccountName: "Ada Lovelace",
-    clientReference: "PAYOUT-2026-0001",
-    narration: "Vendor settlement"
-  };
-  const response = await fetch(\`\${BASE_URL}/api/company/business-payouts\`, {
-    method: "POST",
-    headers: {
-      Authorization: \`Bearer \${TOKEN}\`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(payload)
-  });`
+  amount: 150000,
+  bankId: 12,
+  beneficiaryAccountNumber: "0123456789",
+  beneficiaryAccountName: "Ada Lovelace",
+  clientReference: "PAYOUT-2026-0001",
+  narration: "Vendor settlement"
+};
+const response = await fetch(\`\${BASE_URL}/api/company/business-payouts\`, {
+  method: "POST",
+  headers: {
+    Authorization: \`Bearer \${TOKEN}\`,
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify(payload)
+});`
         },
         
         responses: {
           "200": {
             description: "Success - Payout created",
             example: `{
-    "success": true,
-    "message": "Payout created",
-    "data": {
-      "id": 98765,
-      "amount": 150000,
-      "currency": "NGN",
-      "status": "Processing",
-      "clientReference": "PAYOUT-2026-0001",
-      "transactionReference": "BPAY-ABC123"
-    }
-  }`
+  "success": true,
+  "message": "Payout created",
+  "data": {
+    "id": 98765,
+    "amount": 150000,
+    "currency": "NGN",
+    "status": "Processing",
+    "clientReference": "PAYOUT-2026-0001",
+    "transactionReference": "BPAY-ABC123"
+  }
+}`
           }
+        }
+      },
+      {
+        id: "list-business-payouts",
+        name: "List Payouts",
+        method: "GET",
+        path: "/api/company/business-payouts",
+        description: "Retrieves paginated list of business payouts",
+        
+        parameters: {
+          status: { type: "string", location: "query", required: false, description: "Filter by status", example: "Completed" },
+          page: { type: "number", location: "query", required: false, description: "Page number", example: 1 },
+          pageSize: { type: "number", location: "query", required: false, description: "Items per page", example: 20 }
+        },
+        
+        codeExamples: {
+          curl: `curl -X GET "$BASE_URL/api/company/business-payouts?status=Completed&page=1&pageSize=20" \\
+  -H "Authorization: Bearer $TOKEN"`
+        }
+      },
+      {
+        id: "get-business-payout",
+        name: "Get Payout by ID",
+        method: "GET",
+        path: "/api/company/business-payouts/{payoutId}",
+        description: "Retrieves a specific business payout",
+        
+        parameters: {
+          payoutId: { type: "number", location: "path", required: true, description: "Payout ID", example: 98765 }
+        },
+        
+        codeExamples: {
+          curl: `curl -X GET "$BASE_URL/api/company/business-payouts/98765" \\
+  -H "Authorization: Bearer $TOKEN"`
+        }
+      },
+      {
+        id: "get-business-payout-by-ref",
+        name: "Get Payout by Client Reference",
+        method: "GET",
+        path: "/api/company/business-payouts/reference/{clientReference}",
+        description: "Retrieves a payout by client reference",
+        
+        parameters: {
+          clientReference: { type: "string", location: "path", required: true, description: "Client reference", example: "PAYOUT-2026-0001" }
+        },
+        
+        codeExamples: {
+          curl: `curl -X GET "$BASE_URL/api/company/business-payouts/reference/PAYOUT-2026-0001" \\
+  -H "Authorization: Bearer $TOKEN"`
         }
       },
       {
@@ -554,28 +1251,28 @@ export const companyAccessTokensAPI = {
         
         codeExamples: {
           curl: `curl -X GET "$BASE_URL/api/company/business-payouts/balance?currencyCode=NGN" \\
-    -H "Authorization: Bearer $TOKEN"`
+  -H "Authorization: Bearer $TOKEN"`
         },
         
         responses: {
           "200": {
             description: "Success - Balance retrieved",
             example: `{
-    "success": true,
-    "data": {
-      "walletId": 101,
-      "currencyCode": "NGN",
-      "currentBalance": 1250000,
-      "status": "Active"
-    }
-  }`
+  "success": true,
+  "data": {
+    "walletId": 101,
+    "currencyCode": "NGN",
+    "currentBalance": 1250000,
+    "status": "Active"
+  }
+}`
           }
         }
       }
     ]
   };
   
-  export const companyAccountsAPI = {
+export const companyAccountsAPI = {
     title: "Company Accounts API",
     description: "Manage company virtual accounts and view balances/statements",
     category: "Company APIs",
@@ -609,29 +1306,29 @@ export const companyAccessTokensAPI = {
         
         codeExamples: {
           curl: `curl -X POST "$BASE_URL/api/company/accounts" \\
-    -H "Authorization: Bearer $TOKEN" \\
-    -H "Content-Type: application/json" \\
-    -d '{
-      "firstName": "Ada",
-      "lastName": "Lovelace",
-      "email": "ada@example.com",
-      "phoneNumber": "+2348012345678"
-    }'`
+  -H "Authorization: Bearer $TOKEN" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "firstName": "Ada",
+    "lastName": "Lovelace",
+    "email": "ada@example.com",
+    "phoneNumber": "+2348012345678"
+  }'`
         },
         
         responses: {
           "200": {
             description: "Success - Account created",
             example: `{
-    "success": true,
-    "message": "Account created",
-    "data": {
-      "accountId": 123,
-      "accountNumber": "1020304050",
-      "accountName": "Ada Lovelace",
-      "status": "Active"
-    }
-  }`
+  "success": true,
+  "message": "Account created",
+  "data": {
+    "accountId": 123,
+    "accountNumber": "1020304050",
+    "accountName": "Ada Lovelace",
+    "status": "Active"
+  }
+}`
           }
         }
       },
@@ -649,7 +1346,23 @@ export const companyAccessTokensAPI = {
         
         codeExamples: {
           curl: `curl -X GET "$BASE_URL/api/company/accounts?page=1&pageSize=20" \\
-    -H "Authorization: Bearer $TOKEN"`
+  -H "Authorization: Bearer $TOKEN"`
+        }
+      },
+      {
+        id: "get-company-account",
+        name: "Get Account by ID",
+        method: "GET",
+        path: "/api/company/accounts/{id}",
+        description: "Retrieves a specific company account",
+        
+        parameters: {
+          id: { type: "number", location: "path", required: true, description: "Account ID", example: 123 }
+        },
+        
+        codeExamples: {
+          curl: `curl -X GET "$BASE_URL/api/company/accounts/123" \\
+  -H "Authorization: Bearer $TOKEN"`
         }
       },
       {
@@ -665,21 +1378,21 @@ export const companyAccessTokensAPI = {
         
         codeExamples: {
           curl: `curl -X GET "$BASE_URL/api/company/accounts/1020304050/balance" \\
-    -H "Authorization: Bearer $TOKEN"`
+  -H "Authorization: Bearer $TOKEN"`
         },
         
         responses: {
           "200": {
             description: "Success - Balance retrieved",
             example: `{
-    "success": true,
-    "data": {
-      "accountNumber": "1020304050",
-      "availableBalance": 5000,
-      "currency": "NGN",
-      "accountStatus": "ACTIVE"
-    }
-  }`
+  "success": true,
+  "data": {
+    "accountNumber": "1020304050",
+    "availableBalance": 5000,
+    "currency": "NGN",
+    "accountStatus": "ACTIVE"
+  }
+}`
           }
         }
       },
@@ -698,54 +1411,55 @@ export const companyAccessTokensAPI = {
         
         codeExamples: {
           curl: `curl -X GET "$BASE_URL/api/company/accounts/1020304050/statement?startDate=2026-01-01&endDate=2026-01-31" \\
-    -H "Authorization: Bearer $TOKEN"`
+  -H "Authorization: Bearer $TOKEN"`
         },
         
         responses: {
           "200": {
             description: "Success - Statement retrieved",
             example: `{
-    "success": true,
-    "data": {
-      "accountNumber": "1020304050",
-      "openingBalance": 0,
-      "closingBalance": 5000,
-      "statementList": [
-        {
-          "transactionReference": "TXN-1001",
-          "transactionAmount": 5000,
-          "transactionType": "CREDIT",
-          "transactionDate": "2026-01-10T09:15:00Z"
-        }
-      ]
-    }
-  }`
+  "success": true,
+  "data": {
+    "accountNumber": "1020304050",
+    "openingBalance": 0,
+    "closingBalance": 5000,
+    "statementList": [
+      {
+        "transactionReference": "TXN-1001",
+        "transactionAmount": 5000,
+        "transactionType": "CREDIT",
+        "transactionDate": "2026-01-10T09:15:00Z"
+      }
+    ]
+  }
+}`
           }
         }
       }
     ]
   };
   
-  // Main API registry
-  export const allAPIs = {
-    "company-access-tokens": companyAccessTokensAPI,
-    "outbound-webhooks": outboundWebhooksAPI,
-    "fintech-accounts": fintechAccountsAPI,
-    "company-business-payouts": companyBusinessPayoutsAPI,
-    "company-accounts": companyAccountsAPI
-  };
+// Main API registry
+export const allAPIs = {
+  "company-access-tokens": companyAccessTokensAPI,
+  "fintech-payouts": fintechPayoutsAPI,
+  "outbound-webhooks": outboundWebhooksAPI,
+  "fintech-accounts": fintechAccountsAPI,
+  "company-business-payouts": companyBusinessPayoutsAPI,
+  "company-accounts": companyAccountsAPI
+};
   
-  // Get API categories for sidebar organization
-  export const getAPICategories = () => {
-    const categories = {};
-    
-    Object.values(allAPIs).forEach(api => {
-      const category = api.category || "Other";
-      if (!categories[category]) {
-        categories[category] = [];
-      }
-      categories[category].push(api);
-    });
-    
-    return categories;
-  };
+// Get API categories for sidebar organization
+export const getAPICategories = () => {
+  const categories = {};
+  
+  Object.values(allAPIs).forEach(api => {
+    const category = api.category || "Other";
+    if (!categories[category]) {
+      categories[category] = [];
+    }
+    categories[category].push(api);
+  });
+  
+  return categories;
+};
