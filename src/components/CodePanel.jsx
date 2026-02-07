@@ -1,4 +1,4 @@
-// src/components/CodePanel.jsx - Independent Scrolling Version
+// src/components/CodePanel.jsx - Independent Scrolling Version with Smaller Fonts
 import React, { useState, useEffect } from 'react';
 
 const CodePanel = ({ selectedEndpoint }) => {
@@ -111,7 +111,7 @@ const CodePanel = ({ selectedEndpoint }) => {
           </button>
           
           <div className="h-full overflow-y-auto p-3 md:p-4">
-            <pre className="text-xs md:text-sm font-mono">
+            <pre className="text-[11px] md:text-xs font-mono leading-relaxed">
               <code className="text-gray-200 whitespace-pre-wrap md:whitespace-pre">
                 {selectedEndpoint.codeExamples[selectedLanguage] || 'Code example not available'}
               </code>
@@ -158,7 +158,7 @@ const CodePanel = ({ selectedEndpoint }) => {
           </button>
           
           <div className="h-full overflow-y-auto p-3 md:p-4">
-            <pre className="text-xs md:text-sm font-mono">
+            <pre className="text-[11px] md:text-xs font-mono leading-relaxed">
               <code className="text-gray-200 whitespace-pre-wrap md:whitespace-pre">
                 {getResponseExample()}
               </code>
