@@ -19,7 +19,7 @@ const MainContent = ({ selectedEndpoint, apiData }) => {
             <div className="w-12 h-12 md:w-16 md:h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="text-blue-600 text-xl md:text-2xl">📚</span>
             </div>
-            <h1 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">Welcome to TreeGar API Documentation</h1>
+            <h1 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">Welcome to Conduit API Documentation</h1>
             <p className="text-gray-600 max-w-md mx-auto text-sm md:text-base px-4">
               Select an endpoint from the sidebar to view detailed documentation, code examples, and response formats.
             </p>

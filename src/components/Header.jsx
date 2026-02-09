@@ -20,10 +20,7 @@ const Header = ({ selectedAPI, selectedEndpoint, onMobileMenuToggle }) => {
           </button>
 
           <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">
-              <span className="text-white font-bold text-sm">API</span>
-            </div>
-            <h1 className="text-lg md:text-xl font-bold text-gray-900 truncate">TreeGar Documentation</h1>
+                <img src="/assets/conduit_logo.png" alt="" className='w-[180px] h-[50px]' />
           </div>
         </div>
 
@@ -47,15 +44,9 @@ const Header = ({ selectedAPI, selectedEndpoint, onMobileMenuToggle }) => {
 
         {/* Navigation - Simplified for mobile */}
         <nav className="flex items-center space-x-2 md:space-x-6">
-          <a href="#" className="hidden md:inline text-gray-600 hover:text-blue-600 font-medium">
-            Docs
-          </a>
           <a href="#" className="text-blue-600 font-medium border-b-2 border-blue-600 pb-1 text-sm md:text-base">
             API
           </a>
-          <button className="bg-green-500 hover:bg-green-600 text-white px-3 md:px-4 py-2 rounded-md font-medium transition-colors text-sm">
-            Sign up
-          </button>
         </nav>
       </div>
       
