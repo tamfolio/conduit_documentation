@@ -24,12 +24,10 @@ export const companyAccessTokensAPI = {
       method: "POST",
       path: "/api/company/access-tokens",
       description: "Creates a new access token for fintech integrations. The token value is only returned once — store it securely.",
-
       requestBody: {
         name: { type: "string", required: true, description: "A label for the token", example: "Production Token" },
         expiresAt: { type: "string (ISO 8601)", required: false, description: "Expiry date. No expiry if omitted.", example: "2027-01-01T00:00:00Z" },
       },
-
       codeExamples: {
         curl: `curl -X POST "https://api.treegar.com/api/company/access-tokens" \\
   -H "Authorization: Bearer $TOKEN" \\
@@ -45,7 +43,6 @@ export const companyAccessTokensAPI = {
 });
 const data = await response.json();`,
       },
-
       responses: {
         "201": {
           description: "Token created",
@@ -67,14 +64,12 @@ const data = await response.json();`,
       },
       notes: ["The token value is only returned once at creation. Store it securely — it cannot be retrieved again."],
     },
-
     {
       id: "list-access-tokens",
       name: "List Access Tokens",
       method: "GET",
       path: "/api/company/access-tokens",
       description: "Retrieves all access tokens for the company. The raw token value is not included.",
-
       codeExamples: {
         curl: `curl -X GET "https://api.treegar.com/api/company/access-tokens" \\
   -H "Authorization: Bearer $TOKEN"`,
@@ -83,7 +78,6 @@ const data = await response.json();`,
 });
 const data = await response.json();`,
       },
-
       responses: {
         "200": {
           description: "Tokens retrieved",
@@ -106,23 +100,19 @@ const data = await response.json();`,
         },
       },
     },
-
     {
       id: "revoke-access-token",
       name: "Revoke Access Token",
       method: "DELETE",
       path: "/api/company/access-tokens/{tokenId}",
       description: "Permanently deactivates a token. This action cannot be undone.",
-
       parameters: {
         tokenId: { type: "integer", location: "path", required: true, description: "ID of the token to revoke", example: 5 },
       },
-
       codeExamples: {
         curl: `curl -X DELETE "https://api.treegar.com/api/company/access-tokens/5" \\
   -H "Authorization: Bearer $TOKEN"`,
       },
-
       responses: {
         "200": {
           description: "Token revoked",
@@ -168,7 +158,6 @@ export const fintechAccountsAPI = {
       method: "GET",
       path: "/api/fintech-accounts/providers",
       description: "Returns the virtual account providers assigned to your company. Use the providerId when creating accounts.",
-
       codeExamples: {
         curl: `curl -X GET "https://api.treegar.com/api/fintech-accounts/providers" \\
   -H "Authorization: Bearer $TOKEN"`,
@@ -177,7 +166,6 @@ export const fintechAccountsAPI = {
 });
 const data = await response.json();`,
       },
-
       responses: {
         "200": {
           description: "Providers retrieved",
@@ -194,32 +182,29 @@ const data = await response.json();`,
         },
       },
     },
-
     {
       id: "create-virtual-account",
       name: "Create Virtual Account",
       method: "POST",
       path: "/api/fintech-accounts",
       description: "Creates a permanent virtual account for a customer. BVN is verified against QoreID — name and date of birth must match BVN records.",
-
       requestBody: {
-        bvn: { type: "string", required: true, description: "11-digit Bank Verification Number", example: "22442343954" },
+        bvn: { type: "string", required: true, description: "11-digit Bank Verification Number", example: "22222222222" },
         firstName: { type: "string", required: true, description: "Customer first name — must match BVN records", example: "Oluwatobiloba" },
         lastName: { type: "string", required: true, description: "Customer last name — must match BVN records", example: "Fakorede" },
-        email: { type: "string", required: true, description: "Customer email. Sub-addressing (+) not allowed.", example: "tobiloba@treegar.com" },
+        email: { type: "string", required: true, description: "Customer email. Sub-addressing (+) not allowed.", example: "john@example.com" },
         dateOfBirth: { type: "string", required: true, description: "Date of birth in dd-MM-yyyy format. Must match BVN records.", example: "11-06-1999" },
         providerId: { type: "integer", required: false, description: "Provider to use. Defaults to company's active provider. Call /providers to see options.", example: 2 },
       },
-
       codeExamples: {
         curl: `curl -X POST "https://api.treegar.com/api/fintech-accounts" \\
   -H "Authorization: Bearer $TOKEN" \\
   -H "Content-Type: application/json" \\
   -d '{
-    "bvn": "22442343954",
+    "bvn": "22222222222",
     "firstName": "Oluwatobiloba",
     "lastName": "Fakorede",
-    "email": "tobiloba@treegar.com",
+    "email": "john@example.com",
     "dateOfBirth": "11-06-1999",
     "providerId": 2
   }'`,
@@ -230,20 +215,20 @@ const data = await response.json();`,
     "Content-Type": "application/json",
   },
   body: JSON.stringify({
-    bvn: "22442343954",
+    bvn: "22222222222",
     firstName: "Oluwatobiloba",
     lastName: "Fakorede",
-    email: "tobiloba@treegar.com",
+    email: "john@example.com",
     dateOfBirth: "11-06-1999",
     providerId: 2,
   }),
 });
 const data = await response.json();`,
         php: `$payload = json_encode([
-  "bvn" => "22442343954",
+  "bvn" => "22222222222",
   "firstName" => "Oluwatobiloba",
   "lastName" => "Fakorede",
-  "email" => "tobiloba@treegar.com",
+  "email" => "john@example.com",
   "dateOfBirth" => "11-06-1999",
   "providerId" => 2,
 ]);
@@ -259,7 +244,6 @@ curl_setopt_array($ch, [
 ]);
 $response = curl_exec($ch);`,
       },
-
       responses: {
         "201": {
           description: "Account created",
@@ -269,7 +253,7 @@ $response = curl_exec($ch);`,
   "data": {
     "accountId": 2138,
     "companyId": 14,
-    "accountNumber": "1047215416",
+    "accountNumber": "1047233333",
     "accountName": "Treegar X Corp - OLUWATOBILOBA FAKOREDE",
     "customerCode": "CUSTT8KOU42H",
     "currentBalance": 0,
@@ -300,14 +284,12 @@ $response = curl_exec($ch);`,
         "Email sub-addressing (+ aliases) is not allowed.",
       ],
     },
-
     {
       id: "create-temporary-account",
       name: "Create Temporary Account",
       method: "POST",
       path: "/api/fintech-accounts/temporary",
       description: "Creates a one-time expiring virtual account for collecting a specific payment. Currently only available for companies using the VFD provider.",
-
       requestBody: {
         amount: { type: "string", required: true, description: "Expected payment amount", example: "5000" },
         merchantName: { type: "string", required: true, description: "Name of the payer or customer", example: "John Doe" },
@@ -316,7 +298,6 @@ $response = curl_exec($ch);`,
         validityTime: { type: "integer", required: false, description: "Minutes until expiry. Default 4320 (3 days). Max 4320.", example: 2400 },
         amountValidation: { type: "string", required: false, description: "A3 = any amount accepted. A4 = exact amount only. Default A4.", example: "A3" },
       },
-
       codeExamples: {
         curl: `curl -X POST "https://api.treegar.com/api/fintech-accounts/temporary" \\
   -H "Authorization: Bearer $TOKEN" \\
@@ -344,7 +325,6 @@ $response = curl_exec($ch);`,
 });
 const data = await response.json();`,
       },
-
       responses: {
         "201": {
           description: "Temporary account created",
@@ -362,19 +342,16 @@ const data = await response.json();`,
       },
       notes: ["Currently only available for companies using the VFD provider."],
     },
-
     {
       id: "list-fintech-accounts",
       name: "List Accounts",
       method: "GET",
       path: "/api/fintech-accounts",
       description: "Returns a paginated list of all virtual accounts under your company.",
-
       parameters: {
         page: { type: "integer", location: "query", required: false, description: "Page number", example: 1 },
         pageSize: { type: "integer", location: "query", required: false, description: "Results per page. Max 100.", example: 20 },
       },
-
       codeExamples: {
         curl: `curl -X GET "https://api.treegar.com/api/fintech-accounts?page=1&pageSize=20" \\
   -H "Authorization: Bearer $TOKEN"`,
@@ -383,7 +360,6 @@ const data = await response.json();`,
 });
 const data = await response.json();`,
       },
-
       responses: {
         "200": {
           description: "Accounts retrieved",
@@ -395,7 +371,7 @@ const data = await response.json();`,
       {
         "accountId": 2138,
         "companyId": 14,
-        "accountNumber": "1047215416",
+        "accountNumber": "1047233333",
         "accountName": "Treegar X Corp - OLUWATOBILOBA FAKOREDE",
         "customerId": 101,
         "customerCode": "CUSTT8KOU42H",
@@ -419,23 +395,19 @@ const data = await response.json();`,
         },
       },
     },
-
     {
       id: "get-fintech-account",
       name: "Get Account by ID",
       method: "GET",
       path: "/api/fintech-accounts/{id}",
       description: "Retrieves a specific virtual account by its ID.",
-
       parameters: {
         id: { type: "integer", location: "path", required: true, description: "The account ID", example: 2138 },
       },
-
       codeExamples: {
         curl: `curl -X GET "https://api.treegar.com/api/fintech-accounts/2138" \\
   -H "Authorization: Bearer $TOKEN"`,
       },
-
       responses: {
         "200": {
           description: "Account retrieved",
@@ -445,7 +417,7 @@ const data = await response.json();`,
   "data": {
     "accountId": 2138,
     "companyId": 14,
-    "accountNumber": "1047215416",
+    "accountNumber": "1047233333",
     "accountName": "Treegar X Corp - OLUWATOBILOBA FAKOREDE",
     "customerId": 101,
     "customerCode": "CUSTT8KOU42H",
@@ -474,20 +446,17 @@ const data = await response.json();`,
         },
       },
     },
-
     {
       id: "get-fintech-account-by-number",
       name: "Get Account by Number",
       method: "GET",
       path: "/api/fintech-accounts/number/{accountNumber}",
       description: "Retrieves a specific virtual account by its account number.",
-
       parameters: {
-        accountNumber: { type: "string", location: "path", required: true, description: "The virtual account number", example: "1047215416" },
+        accountNumber: { type: "string", location: "path", required: true, description: "The virtual account number", example: "1047233333" },
       },
-
       codeExamples: {
-        curl: `curl -X GET "https://api.treegar.com/api/fintech-accounts/number/1047215416" \\
+        curl: `curl -X GET "https://api.treegar.com/api/fintech-accounts/number/1047233333" \\
   -H "Authorization: Bearer $TOKEN"`,
       },
     },
@@ -513,12 +482,10 @@ export const fintechCustomersAPI = {
       method: "GET",
       path: "/api/fintech-customers",
       description: "Returns a paginated list of all customers under your company.",
-
       parameters: {
         page: { type: "integer", location: "query", required: false, description: "Page number", example: 1 },
         pageSize: { type: "integer", location: "query", required: false, description: "Results per page. Max 100.", example: 20 },
       },
-
       codeExamples: {
         curl: `curl -X GET "https://api.treegar.com/api/fintech-customers?page=1&pageSize=20" \\
   -H "Authorization: Bearer $TOKEN"`,
@@ -527,7 +494,6 @@ export const fintechCustomersAPI = {
 });
 const data = await response.json();`,
       },
-
       responses: {
         "200": {
           description: "Customers retrieved",
@@ -541,8 +507,8 @@ const data = await response.json();`,
         "customerCode": "CUSTT8KOU42H",
         "firstName": "Oluwatobiloba",
         "lastName": "Fakorede",
-        "email": "tobiloba@treegar.com",
-        "phoneNumber": "08178455067",
+        "email": "john@example.com",
+        "phoneNumber": "08076565432",
         "status": "Active",
         "kycStatus": "Verified",
         "createdAt": "2026-04-13T20:53:29Z"
@@ -558,18 +524,15 @@ const data = await response.json();`,
         },
       },
     },
-
     {
       id: "get-customer",
       name: "Get Customer by ID",
       method: "GET",
       path: "/api/fintech-customers/{id}",
       description: "Returns full customer details including BVN info and all linked virtual accounts.",
-
       parameters: {
         id: { type: "integer", location: "path", required: true, description: "The customer ID", example: 101 },
       },
-
       codeExamples: {
         curl: `curl -X GET "https://api.treegar.com/api/fintech-customers/101" \\
   -H "Authorization: Bearer $TOKEN"`,
@@ -578,7 +541,6 @@ const data = await response.json();`,
 });
 const data = await response.json();`,
       },
-
       responses: {
         "200": {
           description: "Customer retrieved",
@@ -590,22 +552,22 @@ const data = await response.json();`,
     "customerCode": "CUSTT8KOU42H",
     "firstName": "Oluwatobiloba",
     "lastName": "Fakorede",
-    "email": "tobiloba@treegar.com",
-    "phoneNumber": "08178455067",
+    "email": "john@example.com",
+    "phoneNumber": "08076565432",
     "status": "Active",
     "kycStatus": "Verified",
     "tag": "OluwatobilobaFakorede",
     "onboardingStatus": "Approved",
     "createdAt": "2026-04-13T20:53:29Z",
     "updatedAt": "2026-04-13T20:53:29Z",
-    "bvn": "22442343954",
+    "bvn": "22222222222",
     "dob": "11-06-1999",
     "gender": "Male",
     "verificationReference": "qoreid-ref-xxxxxxxx",
     "accounts": [
       {
         "accountId": 2138,
-        "accountNumber": "1047215416",
+        "accountNumber": "1047233333",
         "accountName": "Treegar X Corp - OLUWATOBILOBA FAKOREDE",
         "accountType": "virtual",
         "currencyCode": "NGN",
@@ -652,7 +614,6 @@ export const fintechPayoutsAPI = {
       method: "GET",
       path: "/api/fintech-payouts/banks",
       description: "Returns all banks supported by your company's active payout provider.",
-
       codeExamples: {
         curl: `curl -X GET "https://api.treegar.com/api/fintech-payouts/banks" \\
   -H "Authorization: Bearer $TOKEN"`,
@@ -670,7 +631,6 @@ $response = curl_exec($ch);`,
 req.Header.Set("Authorization", "Bearer "+token)
 resp, _ := http.DefaultClient.Do(req)`,
       },
-
       responses: {
         "200": {
           description: "Banks retrieved",
@@ -688,19 +648,16 @@ resp, _ := http.DefaultClient.Do(req)`,
         },
       },
     },
-
     {
       id: "resolve-account-fintech",
       name: "Resolve Account",
       method: "POST",
       path: "/api/fintech-payouts/resolve-account",
       description: "Verifies a beneficiary account number and returns the account holder name. Always call this before initiating a payout.",
-
       requestBody: {
         accountNumber: { type: "string", required: true, description: "Beneficiary's bank account number", example: "0123456789" },
         bankCode: { type: "string", required: true, description: "Beneficiary's bank code", example: "058" },
       },
-
       codeExamples: {
         curl: `curl -X POST "https://api.treegar.com/api/fintech-payouts/resolve-account" \\
   -H "Authorization: Bearer $TOKEN" \\
@@ -716,7 +673,6 @@ resp, _ := http.DefaultClient.Do(req)`,
 });
 const data = await response.json();`,
       },
-
       responses: {
         "200": {
           description: "Account resolved",
@@ -735,14 +691,12 @@ const data = await response.json();`,
         },
       },
     },
-
     {
       id: "create-payout-fintech",
       name: "Create Payout",
       method: "POST",
       path: "/api/fintech-payouts/payouts",
       description: "Initiates a transfer from your company wallet to a bank account. Each payout requires a unique clientReference.",
-
       requestBody: {
         amount: { type: "number", required: true, description: "Amount in NGN", example: 5000.00 },
         currency: { type: "string", required: true, description: "Currency code", example: "NGN" },
@@ -752,7 +706,6 @@ const data = await response.json();`,
         narration: { type: "string", required: true, description: "Transfer description", example: "Payment for services" },
         clientReference: { type: "string", required: true, description: "Your unique reference. Duplicate returns 409.", example: "MY-REF-001" },
       },
-
       codeExamples: {
         curl: `curl -X POST "https://api.treegar.com/api/fintech-payouts/payouts" \\
   -H "Authorization: Bearer $TOKEN" \\
@@ -804,7 +757,6 @@ curl_setopt_array($ch, [
 ]);
 $response = curl_exec($ch);`,
       },
-
       responses: {
         "201": {
           description: "Payout created",
@@ -844,26 +796,22 @@ $response = curl_exec($ch);`,
         "Insufficient balance returns a 400 error.",
       ],
     },
-
     {
       id: "list-payouts-fintech",
       name: "List Payouts",
       method: "GET",
       path: "/api/fintech-payouts/payouts",
       description: "Returns a paginated list of all payouts with optional filters.",
-
       parameters: {
         status: { type: "string", location: "query", required: false, description: "Filter by status: Pending, Completed, Failed", example: "Completed" },
         walletType: { type: "string", location: "query", required: false, description: "Filter by wallet type", example: "Disbursement" },
         page: { type: "integer", location: "query", required: false, description: "Page number", example: 1 },
         pageSize: { type: "integer", location: "query", required: false, description: "Results per page. Max 100.", example: 20 },
       },
-
       codeExamples: {
         curl: `curl -X GET "https://api.treegar.com/api/fintech-payouts/payouts?status=Completed&page=1&pageSize=20" \\
   -H "Authorization: Bearer $TOKEN"`,
       },
-
       responses: {
         "200": {
           description: "Payouts retrieved",
@@ -895,23 +843,19 @@ $response = curl_exec($ch);`,
         },
       },
     },
-
     {
       id: "get-payout-by-id",
       name: "Get Payout by ID",
       method: "GET",
       path: "/api/fintech-payouts/payouts/{payoutId}",
       description: "Retrieves a specific payout by its ID.",
-
       parameters: {
         payoutId: { type: "integer", location: "path", required: true, description: "The payout ID", example: 881 },
       },
-
       codeExamples: {
         curl: `curl -X GET "https://api.treegar.com/api/fintech-payouts/payouts/881" \\
   -H "Authorization: Bearer $TOKEN"`,
       },
-
       responses: {
         "404": {
           description: "Payout not found",
@@ -925,40 +869,33 @@ $response = curl_exec($ch);`,
         },
       },
     },
-
     {
       id: "get-payout-by-reference",
       name: "Get Payout by Client Reference",
       method: "GET",
       path: "/api/fintech-payouts/payouts/reference/{clientReference}",
       description: "Retrieves a payout using your unique client reference.",
-
       parameters: {
         clientReference: { type: "string", location: "path", required: true, description: "Your unique client reference", example: "MY-REF-001" },
       },
-
       codeExamples: {
         curl: `curl -X GET "https://api.treegar.com/api/fintech-payouts/payouts/reference/MY-REF-001" \\
   -H "Authorization: Bearer $TOKEN"`,
       },
     },
-
     {
       id: "list-wallets",
       name: "Get Wallet Balances",
       method: "GET",
       path: "/api/fintech-payouts/wallets",
       description: "Returns all wallets for the company with current and ledger balances.",
-
       parameters: {
         currencyCode: { type: "string", location: "query", required: false, description: "Filter by currency. Returns all if omitted.", example: "NGN" },
       },
-
       codeExamples: {
         curl: `curl -X GET "https://api.treegar.com/api/fintech-payouts/wallets?currencyCode=NGN" \\
   -H "Authorization: Bearer $TOKEN"`,
       },
-
       responses: {
         "200": {
           description: "Wallets retrieved",
@@ -989,19 +926,16 @@ $response = curl_exec($ch);`,
         },
       },
     },
-
     {
       id: "create-or-get-wallet",
       name: "Create or Get Wallet",
       method: "POST",
       path: "/api/fintech-payouts/wallets",
       description: "Idempotent — returns the existing wallet if one already exists for the given currency and type.",
-
       requestBody: {
         currencyCode: { type: "string", required: true, description: "Currency code", example: "NGN" },
         walletType: { type: "string", required: true, description: "Collection or Disbursement", example: "Collection" },
       },
-
       codeExamples: {
         curl: `curl -X POST "https://api.treegar.com/api/fintech-payouts/wallets" \\
   -H "Authorization: Bearer $TOKEN" \\
@@ -1009,26 +943,22 @@ $response = curl_exec($ch);`,
   -d '{ "currencyCode": "NGN", "walletType": "Collection" }'`,
       },
     },
-
     {
       id: "list-webhook-deliveries-fintech",
       name: "List Webhook Deliveries",
       method: "GET",
       path: "/api/fintech-payouts/webhooks/deliveries",
       description: "View the history of outbound webhook notifications for payout events.",
-
       parameters: {
         eventType: { type: "string", location: "query", required: false, description: "Filter by event type: payout.created, payout.completed, payout.failed", example: "payout.completed" },
         status: { type: "string", location: "query", required: false, description: "Filter by delivery status: Pending, Delivered, Failed", example: "Failed" },
         pageNumber: { type: "integer", location: "query", required: false, description: "Page number", example: 1 },
         pageSize: { type: "integer", location: "query", required: false, description: "Results per page. Max 200.", example: 50 },
       },
-
       codeExamples: {
         curl: `curl -X GET "https://api.treegar.com/api/fintech-payouts/webhooks/deliveries?status=Failed&eventType=payout.failed&pageNumber=1&pageSize=50" \\
   -H "Authorization: Bearer $TOKEN"`,
       },
-
       responses: {
         "200": {
           description: "Webhook deliveries retrieved",
@@ -1053,23 +983,19 @@ $response = curl_exec($ch);`,
         },
       },
     },
-
     {
       id: "resend-webhook-delivery-fintech",
       name: "Resend Webhook Delivery",
       method: "POST",
       path: "/api/fintech-payouts/webhooks/deliveries/{id}/resend",
       description: "Re-triggers a single webhook delivery. Useful when your server was down or returned a non-2xx response.",
-
       parameters: {
         id: { type: "integer", location: "path", required: true, description: "The webhook delivery ID to resend", example: 44 },
       },
-
       codeExamples: {
         curl: `curl -X POST "https://api.treegar.com/api/fintech-payouts/webhooks/deliveries/44/resend" \\
   -H "Authorization: Bearer $TOKEN"`,
       },
-
       responses: {
         "200": {
           description: "Webhook delivery re-triggered",
@@ -1103,7 +1029,7 @@ $response = curl_exec($ch);`,
   ],
 };
 
-// ─── Outbound Webhooks (kept from original) ──────────────────────────────────
+// ─── Outbound Webhooks ───────────────────────────────────────────────────────
 export const outboundWebhooksAPI = {
   title: "Outbound Webhooks API",
   description: "Configure and manage outbound webhook deliveries for event notifications",
@@ -1125,7 +1051,6 @@ export const outboundWebhooksAPI = {
       method: "POST",
       path: "/api/outboundwebhook",
       description: "Creates a new webhook configuration for event delivery",
-
       requestBody: {
         name: { type: "string", required: true, description: "Webhook name", example: "Fintech Payouts" },
         endpointUrl: { type: "string", required: true, description: "Target webhook URL", example: "https://client.example.com/webhooks/payouts" },
@@ -1140,7 +1065,6 @@ export const outboundWebhooksAPI = {
         description: { type: "string", required: false, description: "Webhook description", example: "Payout status updates" },
         eventType: { type: "string", required: true, description: "Event type to listen for", example: "payout.completed" },
       },
-
       codeExamples: {
         curl: `curl -X POST "https://api.treegar.com/api/outboundwebhook" \\
   -H "Authorization: Bearer $TOKEN" \\
@@ -1173,7 +1097,6 @@ export const outboundWebhooksAPI = {
   }),
 });`,
       },
-
       responses: {
         "200": {
           description: "Webhook created",
@@ -1191,7 +1114,6 @@ export const outboundWebhooksAPI = {
         },
       },
     },
-
     {
       id: "list-webhooks",
       name: "List Webhook Configurations",
@@ -1204,23 +1126,19 @@ export const outboundWebhooksAPI = {
   -H "X-API-Key: $API_KEY"`,
       },
     },
-
     {
       id: "update-webhook",
       name: "Update Webhook Configuration",
       method: "PUT",
       path: "/api/outboundwebhook/{id}",
       description: "Updates an existing webhook configuration",
-
       parameters: {
         id: { type: "number", location: "path", required: true, description: "Webhook configuration ID", example: 77 },
       },
-
       requestBody: {
         isActive: { type: "boolean", required: false, description: "Enable/disable webhook", example: false },
         timeoutSeconds: { type: "number", required: false, description: "Request timeout", example: 60 },
       },
-
       codeExamples: {
         curl: `curl -X PUT "https://api.treegar.com/api/outboundwebhook/77" \\
   -H "Authorization: Bearer $TOKEN" \\
@@ -1229,42 +1147,35 @@ export const outboundWebhooksAPI = {
   -d '{ "isActive": false, "timeoutSeconds": 60 }'`,
       },
     },
-
     {
       id: "delete-webhook",
       name: "Delete Webhook Configuration",
       method: "DELETE",
       path: "/api/outboundwebhook/{id}",
       description: "Deletes a webhook configuration",
-
       parameters: {
         id: { type: "number", location: "path", required: true, description: "Webhook configuration ID", example: 77 },
       },
-
       codeExamples: {
         curl: `curl -X DELETE "https://api.treegar.com/api/outboundwebhook/77" \\
   -H "Authorization: Bearer $TOKEN" \\
   -H "X-API-Key: $API_KEY"`,
       },
     },
-
     {
       id: "webhook-stats",
       name: "Webhook Delivery Stats",
       method: "GET",
       path: "/api/outboundwebhook/stats",
       description: "Get delivery statistics for webhooks",
-
       parameters: {
         eventType: { type: "string", location: "query", required: false, description: "Filter by event type", example: "payout.completed" },
       },
-
       codeExamples: {
         curl: `curl -X GET "https://api.treegar.com/api/outboundwebhook/stats?eventType=payout.completed" \\
   -H "Authorization: Bearer $TOKEN" \\
   -H "X-API-Key: $API_KEY"`,
       },
-
       responses: {
         "200": {
           description: "Stats retrieved",
@@ -1280,39 +1191,33 @@ export const outboundWebhooksAPI = {
         },
       },
     },
-
     {
       id: "list-webhook-deliveries",
       name: "List Webhook Deliveries",
       method: "GET",
       path: "/api/outboundwebhook/deliveries",
       description: "Retrieves webhook delivery history",
-
       parameters: {
         status: { type: "string", location: "query", required: false, description: "Filter by status", example: "FAILED" },
         configurationId: { type: "number", location: "query", required: false, description: "Filter by webhook config ID", example: 77 },
         pageNumber: { type: "number", location: "query", required: false, description: "Page number", example: 1 },
         pageSize: { type: "number", location: "query", required: false, description: "Items per page", example: 50 },
       },
-
       codeExamples: {
         curl: `curl -X GET "https://api.treegar.com/api/outboundwebhook/deliveries?status=FAILED&configurationId=77&pageNumber=1&pageSize=50" \\
   -H "Authorization: Bearer $TOKEN" \\
   -H "X-API-Key: $API_KEY"`,
       },
     },
-
     {
       id: "retry-webhook-delivery",
       name: "Retry Webhook Delivery",
       method: "POST",
       path: "/api/outboundwebhook/deliveries/{id}/retry",
       description: "Retries a failed webhook delivery",
-
       parameters: {
         id: { type: "number", location: "path", required: true, description: "Delivery ID", example: 9001 },
       },
-
       codeExamples: {
         curl: `curl -X POST "https://api.treegar.com/api/outboundwebhook/deliveries/9001/retry" \\
   -H "Authorization: Bearer $TOKEN" \\
@@ -1322,7 +1227,7 @@ export const outboundWebhooksAPI = {
   ],
 };
 
-// ─── Company Business Payouts (kept from original) ───────────────────────────
+// ─── Company Business Payouts ────────────────────────────────────────────────
 export const companyBusinessPayoutsAPI = {
   title: "Company Business Payouts API",
   description: "Create and manage business payouts using company accounts",
@@ -1507,7 +1412,7 @@ export const companyBusinessPayoutsAPI = {
   ],
 };
 
-// ─── Company Accounts (kept from original) ───────────────────────────────────
+// ─── Company Accounts ────────────────────────────────────────────────────────
 export const companyAccountsAPI = {
   title: "Company Accounts API",
   description: "Manage company virtual accounts and view balances and statements",
