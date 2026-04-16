@@ -1,74 +1,81 @@
-// src/components/Header.jsx - Responsive Version
 import React, { useState } from 'react';
 
-const Header = ({ selectedAPI, selectedEndpoint, onMobileMenuToggle }) => {
+const SunIcon = () => (
+  <svg width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+  </svg>
+);
+
+const MoonIcon = () => (
+  <svg width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+  </svg>
+);
+
+const MenuIcon = () => (
+  <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+    <path d="M3 12h18M3 6h18M3 18h18"/>
+  </svg>
+);
+
+const Header = ({ onMobileMenuToggle, theme, onThemeToggle }) => {
   const [searchQuery, setSearchQuery] = useState('');
 
   return (
-    <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
-      <div className="flex items-center justify-between px-4 md:px-6 py-4">
-        {/* Mobile Menu Button + Logo */}
-        <div className="flex items-center space-x-4">
-          {/* Mobile menu button */}
-          <button
-            onClick={onMobileMenuToggle}
-            className="md:hidden p-2 rounded-md text-gray-500 hover:text-gray-900 hover:bg-gray-100"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
+    <header className="docs-header">
+      {/* Left — hamburger + logo */}
+      <div className="docs-header-left">
+        <button
+          onClick={onMobileMenuToggle}
+          className="theme-toggle md:hidden"
+          aria-label="Toggle menu"
+        >
+          <MenuIcon />
+        </button>
 
-          <div className="flex items-center space-x-2">
-                <img src="/assets/conduit_logo.png" alt="" className='w-[180px] h-[50px]' />
-          </div>
-        </div>
-
-        {/* Search Bar - Hidden on small mobile, visible on larger screens */}
-        <div className="hidden sm:flex flex-1 max-w-lg mx-4 md:mx-8">
-          <div className="relative w-full">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </div>
-            <input
-              type="text"
-              placeholder="Search API Reference"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm"
-            />
-          </div>
-        </div>
-
-        {/* Navigation - Simplified for mobile */}
-        <nav className="flex items-center space-x-2 md:space-x-6">
-          <a href="#" className="text-blue-600 font-medium border-b-2 border-blue-600 pb-1 text-sm md:text-base">
-            API
-          </a>
-        </nav>
+        <a href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+          <img
+            src="/assets/conduit_logo.png"
+            alt="Conduit"
+            style={{ height: '32px', width: 'auto' }}
+          />
+        </a>
       </div>
-      
-      {/* Mobile Search - Expandable */}
-      <div className="sm:hidden px-4 pb-4">
-        <div className="relative">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-          </div>
+
+      {/* Center — search */}
+      <div className="docs-header-center">
+        <div className="docs-search">
+          <svg className="docs-search-icon" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+          </svg>
           <input
             type="text"
-            placeholder="Search API Reference"
+            placeholder="Search API reference..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm"
+            onChange={e => setSearchQuery(e.target.value)}
           />
         </div>
       </div>
-      
 
+      {/* Right — nav + theme */}
+      <div className="docs-header-right">
+        <nav style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+          <a href="#" className="docs-nav-tab active">API Reference</a>
+          <a href="#" className="docs-nav-tab">Guides</a>
+          <a href="#" className="docs-nav-tab">Changelog</a>
+        </nav>
+
+        <div style={{ width: '1px', height: '20px', background: 'var(--border)', margin: '0 4px' }} />
+
+        <button
+          className="theme-toggle"
+          onClick={onThemeToggle}
+          aria-label="Toggle theme"
+          title={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
+        >
+          {theme === 'light' ? <MoonIcon /> : <SunIcon />}
+        </button>
+      </div>
     </header>
   );
 };

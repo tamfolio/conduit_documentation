@@ -1,4 +1,3 @@
-// src/App.jsx - Final Robust Solution with CSS Classes
 import React, { useState, useEffect } from 'react';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
@@ -10,86 +9,55 @@ function App() {
   const [selectedEndpoint, setSelectedEndpoint] = useState(null);
   const [selectedAPI, setSelectedAPI] = useState(companyAccessTokensAPI);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [theme, setTheme] = useState(() => localStorage.getItem('docs-theme') || 'light');
 
-  const handleEndpointSelect = (endpoint) => {
-    console.log('Endpoint selected:', endpoint);
-    setSelectedEndpoint(endpoint);
-  };
-
-  const handleAPIChange = (api) => {
-    console.log('API changed:', api);
-    setSelectedAPI(api);
-    setSelectedEndpoint(null);
-  };
-
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
-
-  const closeMobileMenu = () => {
-    setIsMobileMenuOpen(false);
-  };
-
-  // Prevent body scrolling when mobile sidebar is open
+  // Apply theme to document
   useEffect(() => {
-    if (isMobileMenuOpen) {
-      document.body.classList.add('sidebar-open');
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.classList.remove('sidebar-open');
-      document.body.style.overflow = '';
-    }
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('docs-theme', theme);
+  }, [theme]);
 
-    return () => {
-      document.body.classList.remove('sidebar-open');
-      document.body.style.overflow = '';
-    };
+  // Lock body scroll on mobile menu open
+  useEffect(() => {
+    document.body.style.overflow = isMobileMenuOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
   }, [isMobileMenuOpen]);
 
+  const toggleTheme = () => setTheme(t => t === 'light' ? 'dark' : 'light');
+
   return (
-    <div className="full-height-container flex flex-col bg-gray-50 font-['Roboto']">
-      {/* Fixed Header */}
-      <Header 
+    <div className="docs-layout">
+      <Header
         selectedAPI={selectedAPI}
         selectedEndpoint={selectedEndpoint}
-        onMobileMenuToggle={toggleMobileMenu}
+        onMobileMenuToggle={() => setIsMobileMenuOpen(o => !o)}
+        theme={theme}
+        onThemeToggle={toggleTheme}
       />
-      
-      {/* Main Layout Container - Takes remaining height */}
-      <div className="flex-1 flex overflow-hidden">
-        {/* Sidebar Container - Fixed width, no flex grow */}
-        <div className="sidebar-container prevent-scroll-chain">
-          <Sidebar 
-            onEndpointSelect={handleEndpointSelect}
-            onAPIChange={handleAPIChange}
+
+      <div className="docs-body">
+        {/* Mobile overlay */}
+        <div
+          className={`mobile-overlay ${isMobileMenuOpen ? 'open' : ''}`}
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+
+        <Sidebar
+          onEndpointSelect={(ep) => { setSelectedEndpoint(ep); setIsMobileMenuOpen(false); }}
+          onAPIChange={(api) => { setSelectedAPI(api); setSelectedEndpoint(null); setIsMobileMenuOpen(false); }}
+          selectedEndpoint={selectedEndpoint}
+          selectedAPI={selectedAPI}
+          isOpen={isMobileMenuOpen}
+        />
+
+        <main className="docs-main">
+          <MainContent
             selectedEndpoint={selectedEndpoint}
-            selectedAPI={selectedAPI}
-            isMobileMenuOpen={isMobileMenuOpen}
-            onMobileMenuClose={closeMobileMenu}
+            apiData={selectedAPI}
           />
-        </div>
-        
-        {/* Content Area Container - Flex grow, independent scrolling */}
-        <div className="flex-1 flex flex-col lg:flex-row min-w-0 overflow-hidden">
-          {/* Main Content Area */}
-          <div className="flex-1 min-w-0 overflow-hidden">
-            <div className="content-scroll-area">
-              <MainContent 
-                selectedEndpoint={selectedEndpoint}
-                apiData={selectedAPI}
-              />
-            </div>
-          </div>
-          
-          {/* Code Panel Area */}
-          <div className="w-full lg:w-1/2 min-w-0 overflow-hidden">
-            <div className="code-scroll-area">
-              <CodePanel 
-                selectedEndpoint={selectedEndpoint}
-              />
-            </div>
-          </div>
-        </div>
+        </main>
+
+        <CodePanel selectedEndpoint={selectedEndpoint} />
       </div>
     </div>
   );

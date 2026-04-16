@@ -1,211 +1,115 @@
-// src/components/Sidebar.jsx - Robust Scroll Isolation
 import React, { useState } from 'react';
 import { getAPICategories } from '../data/apiData';
 
-const Sidebar = ({ 
-  onEndpointSelect, 
-  selectedEndpoint, 
-  onAPIChange, 
-  selectedAPI, 
-  isMobileMenuOpen, 
-  onMobileMenuClose 
-}) => {
-  const [expandedSections, setExpandedSections] = useState({
-    'Company APIs': true,
-    'Fintech APIs': true,
-    'Integration APIs': true
-  });
+const ChevronIcon = ({ open }) => (
+  <svg className={`sidebar-group-chevron ${open ? 'open' : ''}`} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+    <path d="M9 18l6-6-6-6"/>
+  </svg>
+);
 
-  const toggleSection = (section) => {
-    console.log('Toggling section:', section);
-    setExpandedSections(prev => ({
-      ...prev,
-      [section]: !prev[section]
-    }));
-  };
+const categoryIcons = {
+  'Company APIs': (
+    <svg className="sidebar-group-icon" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+      <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+    </svg>
+  ),
+  'Fintech APIs': (
+    <svg className="sidebar-group-icon" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+      <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/>
+    </svg>
+  ),
+  'Integration APIs': (
+    <svg className="sidebar-group-icon" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+      <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/>
+    </svg>
+  ),
+};
 
+const MethodBadge = ({ method }) => (
+  <span className={`method-badge method-${method}`}>{method}</span>
+);
+
+const Sidebar = ({ onEndpointSelect, onAPIChange, selectedEndpoint, selectedAPI, isOpen }) => {
   const apiCategories = getAPICategories();
-  const categoryIcons = {
-    'Company APIs': '🏢',
-    'Fintech APIs': '💳',
-    'Integration APIs': '🔗',
-    'Other': '📋'
-  };
 
-  const handleAPIClick = (api) => {
-    console.log('API clicked:', api.title);
-    onAPIChange(api);
-    if (window.innerWidth < 768) {
-      onMobileMenuClose?.();
-    }
-  };
+  const [expandedGroups, setExpandedGroups] = useState(() =>
+    Object.fromEntries(Object.keys(apiCategories).map(k => [k, true]))
+  );
 
-  const handleEndpointClick = (endpoint) => {
-    console.log('Endpoint clicked:', endpoint.name);
-    onEndpointSelect(endpoint);
-    if (window.innerWidth < 768) {
-      onMobileMenuClose?.();
-    }
-  };
+  const toggleGroup = (name) =>
+    setExpandedGroups(p => ({ ...p, [name]: !p[name] }));
 
   return (
-    <>
-      {/* Mobile Overlay */}
-      {isMobileMenuOpen && (
-        <div 
-          className="fixed inset-0 z-40 bg-black bg-opacity-50 md:hidden"
-          onClick={onMobileMenuClose}
-        />
-      )}
+    <aside className={`docs-sidebar ${isOpen ? 'open' : ''}`}>
+      <div className="sidebar-section-label">API Reference</div>
 
-      {/* Sidebar - Completely isolated scrolling */}
-      <aside 
-        className={`
-          fixed md:static top-0 left-0 z-50
-          w-80 bg-white border-r border-gray-200 
-          transform transition-transform duration-300 ease-in-out
-          md:transform-none
-          ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
-        `}
-        style={{ 
-          height: 'calc(100vh - 0px)', // Full viewport height minus header
-          top: isMobileMenuOpen ? '0' : 'auto', // Mobile: full screen, Desktop: below header
-          marginTop: isMobileMenuOpen ? '0' : '0' // No margin to prevent scroll coupling
-        }}
-      >
-        {/* Mobile Close Button - Fixed at top */}
-        <div className="md:hidden flex items-center justify-between p-4 border-b border-gray-200 bg-white sticky top-0 z-10">
-          <h2 className="text-lg font-semibold text-gray-900">API Documentation</h2>
+      {Object.entries(apiCategories).map(([categoryName, apis]) => (
+        <div key={categoryName} className="sidebar-group">
+          {/* Category header */}
           <button
-            onClick={onMobileMenuClose}
-            className="p-2 rounded-md text-gray-500 hover:text-gray-900 hover:bg-gray-100"
+            className="sidebar-group-btn"
+            onClick={() => toggleGroup(categoryName)}
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            {categoryIcons[categoryName] || null}
+            <span style={{ flex: 1 }}>{categoryName}</span>
+            <span className="sidebar-group-count">{apis.length}</span>
+            <ChevronIcon open={expandedGroups[categoryName]} />
           </button>
-        </div>
 
-        {/* SCROLLABLE CONTENT - This is the ONLY part that scrolls */}
-        <div 
-          className="h-full overflow-y-auto p-4 md:p-6"
-          style={{ 
-            // Prevent this scroll from bubbling up to parent
-            overscrollBehavior: 'contain',
-            // Force its own scrolling context
-            position: 'relative',
-            // Ensure it takes available height
-            height: isMobileMenuOpen ? 'calc(100% - 80px)' : '100%'
-          }}
-          onWheel={(e) => {
-            // Prevent wheel events from bubbling to parent when at scroll boundaries
-            const element = e.currentTarget;
-            const atTop = element.scrollTop === 0;
-            const atBottom = element.scrollTop >= (element.scrollHeight - element.clientHeight);
-            
-            if ((atTop && e.deltaY < 0) || (atBottom && e.deltaY > 0)) {
-              e.preventDefault();
-            }
-          }}
-        >
-
-
-          {/* API Categories */}
-          <div>
-            <h3 className="text-xs md:text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">
-              API ENDPOINTS
-            </h3>
-            
-            {Object.entries(apiCategories).map(([categoryName, apis]) => (
-              <div key={categoryName} className="mb-4 md:mb-6">
-                <button
-                  onClick={() => toggleSection(categoryName)}
-                  className="flex items-center w-full text-left px-3 py-2 text-blue-600 hover:bg-blue-50 rounded-md transition-colors mb-2 text-sm"
-                >
-                  <span className="mr-2 md:mr-3 text-sm">{categoryIcons[categoryName] || '📋'}</span>
-                  <span className="font-medium flex-1 truncate">{categoryName}</span>
-                  <span className="ml-auto text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded shrink-0">
-                    {apis.length}
-                  </span>
-                  <svg
-                    className={`ml-2 w-4 h-4 transition-transform shrink-0 ${
-                      expandedSections[categoryName] ? 'rotate-90' : ''
-                    }`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+          {/* APIs in category */}
+          {expandedGroups[categoryName] && (
+            <div>
+              {apis.map(api => (
+                <div key={api.title}>
+                  <button
+                    className={`sidebar-api-btn ${selectedAPI?.title === api.title ? 'active' : ''}`}
+                    onClick={() => onAPIChange(api)}
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-                
-                {/* APIs in this category */}
-                {expandedSections[categoryName] && (
-                  <div className="ml-4 md:ml-6 space-y-1">
-                    {apis.map((api) => (
-                      <div key={api.title} className="mb-3 md:mb-4">
-                        <button
-                          onClick={() => handleAPIClick(api)}
-                          className={`block w-full text-left px-3 py-2 text-sm rounded-md transition-colors ${
-                            selectedAPI?.title === api.title
-                              ? 'bg-blue-50 text-blue-700 font-medium border-2 border-blue-200'
-                              : 'text-gray-700 hover:bg-gray-100 border-2 border-transparent'
-                          }`}
-                        >
-                          <div className="font-medium truncate">{api.title}</div>
-                          <div className="text-xs text-gray-500 mt-1">
-                            {api.endpoints.length} endpoint{api.endpoints.length !== 1 ? 's' : ''}
-                          </div>
-                        </button>
-                        
-                        {/* Endpoints for selected API */}
-                        {selectedAPI?.title === api.title && (
-                          <div className="ml-3 md:ml-4 mt-2 space-y-1 border-l-2 border-blue-200 pl-2">
-                            {api.endpoints.map((endpoint) => (
-                              <button
-                                key={endpoint.id}
-                                onClick={() => handleEndpointClick(endpoint)}
-                                className={`block w-full text-left px-2 md:px-3 py-1 md:py-2 text-xs md:text-sm rounded-md transition-colors ${
-                                  selectedEndpoint?.id === endpoint.id
-                                    ? 'bg-blue-100 text-blue-700 font-medium border border-blue-300'
-                                    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 border border-transparent'
-                                }`}
-                              >
-                                <div className="flex items-center">
-                                  <span className={`mr-2 px-1.5 py-0.5 text-xs font-medium rounded shrink-0 ${
-                                    endpoint.method === 'POST' ? 'bg-blue-500 text-white' :
-                                    endpoint.method === 'GET' ? 'bg-green-500 text-white' :
-                                    endpoint.method === 'PUT' ? 'bg-orange-500 text-white' :
-                                    endpoint.method === 'DELETE' ? 'bg-red-500 text-white' :
-                                    'bg-gray-500 text-white'
-                                  }`}>
-                                    {endpoint.method}
-                                  </span>
-                                  <span className="text-xs truncate">{endpoint.name}</span>
-                                </div>
-                              </button>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
+                    {api.title}
+                    <span className="sidebar-api-count">
+                      · {api.endpoints.length} endpoint{api.endpoints.length !== 1 ? 's' : ''}
+                    </span>
+                  </button>
 
-            {/* Quick Stats */}
-            <div className="mt-6 md:mt-8 p-3 md:p-4 bg-gray-50 rounded-lg">
-              <h4 className="font-medium text-gray-800 mb-2 text-sm">Documentation Stats</h4>
-              <div className="text-xs md:text-sm text-gray-600 space-y-1">
-                <div>Total APIs: {Object.keys(apiCategories).length}</div>
-                <div>Total Endpoints: {Object.values(apiCategories).flat().reduce((acc, api) => acc + api.endpoints.length, 0)}</div>
-              </div>
+                  {/* Endpoints */}
+                  {selectedAPI?.title === api.title && (
+                    <div className="sidebar-endpoints">
+                      {api.endpoints.map(ep => (
+                        <button
+                          key={ep.id}
+                          className={`sidebar-endpoint-btn ${selectedEndpoint?.id === ep.id ? 'active' : ''}`}
+                          onClick={() => onEndpointSelect(ep)}
+                        >
+                          <MethodBadge method={ep.method} />
+                          <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                            {ep.name}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
-          </div>
+          )}
         </div>
-      </aside>
-    </>
+      ))}
+
+      {/* Stats footer */}
+      <div style={{
+        margin: '24px 16px 8px',
+        padding: '12px 14px',
+        background: 'var(--bg-tertiary)',
+        borderRadius: '8px',
+        fontSize: '12px',
+        color: 'var(--text-muted)',
+        lineHeight: '1.6',
+      }}>
+        <div style={{ fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '4px' }}>Documentation</div>
+        <div>{Object.values(apiCategories).flat().length} APIs</div>
+        <div>{Object.values(apiCategories).flat().reduce((a, api) => a + api.endpoints.length, 0)} endpoints</div>
+      </div>
+    </aside>
   );
 };
 
