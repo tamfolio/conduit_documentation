@@ -94,21 +94,6 @@ const Sidebar = ({ onEndpointSelect, onAPIChange, selectedEndpoint, selectedAPI,
           )}
         </div>
       ))}
-
-      {/* Stats footer */}
-      <div style={{
-        margin: '24px 16px 8px',
-        padding: '12px 14px',
-        background: 'var(--bg-tertiary)',
-        borderRadius: '8px',
-        fontSize: '12px',
-        color: 'var(--text-muted)',
-        lineHeight: '1.6',
-      }}>
-        <div style={{ fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '4px' }}>Documentation</div>
-        <div>{Object.values(apiCategories).flat().length} APIs</div>
-        <div>{Object.values(apiCategories).flat().reduce((a, api) => a + api.endpoints.length, 0)} endpoints</div>
-      </div>
     </aside>
   );
 };

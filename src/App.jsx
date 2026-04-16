@@ -33,6 +33,8 @@ function App() {
         onMobileMenuToggle={() => setIsMobileMenuOpen(o => !o)}
         theme={theme}
         onThemeToggle={toggleTheme}
+        onEndpointSelect={(ep) => setSelectedEndpoint(ep)}
+        onAPIChange={(api) => { setSelectedAPI(api); setSelectedEndpoint(null); }}
       />
 
       <div className="docs-body">
